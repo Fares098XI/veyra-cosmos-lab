@@ -36,6 +36,102 @@ export default function MapPage() {
       action: "Continue long-term monitoring",
       color: "green",
     },
+    {
+      location: "California Wildfires",
+      status: "ACTIVE INCIDENT",
+      summary: "Multiple active fire zones detected. Over 50,000 acres affected.",
+      impact: "Air quality degradation and habitat destruction",
+      action: "Evacuate affected areas; monitor fire spread",
+      color: "red",
+    },
+    {
+      location: "Arctic Ice Shelf",
+      status: "AT RISK",
+      summary: "Ice loss accelerating. 12% reduction in coverage this year.",
+      impact: "Sea level rise and polar habitat loss",
+      action: "Track ice extent; study climate patterns",
+      color: "orange",
+    },
+    {
+      location: "Ganges Delta",
+      status: "AT RISK",
+      summary: "Rising sea levels threatening coastal communities. Erosion increasing.",
+      impact: "Displacement of millions and agricultural loss",
+      action: "Implement flood defenses; relocate vulnerable populations",
+      color: "orange",
+    },
+    {
+      location: "Lake Chad",
+      status: "AT RISK",
+      summary: "Water levels at historic lows. 90% shrinkage since 1960s.",
+      impact: "Water scarcity affecting 30 million people",
+      action: "Water conservation; regional cooperation needed",
+      color: "orange",
+    },
+    {
+      location: "Borneo Forests",
+      status: "ACTIVE INCIDENT",
+      summary: "Palm oil expansion causing rapid deforestation. Orangutan habitat threatened.",
+      impact: "Species extinction risk and carbon emissions",
+      action: "Support sustainable agriculture; protect reserves",
+      color: "red",
+    },
+    {
+      location: "Antarctic Peninsula",
+      status: "AT RISK",
+      summary: "Warming faster than global average. Ice shelf collapse detected.",
+      impact: "Accelerated global sea level rise",
+      action: "Monitor glacier movement; climate research",
+      color: "orange",
+    },
+    {
+      location: "Mediterranean Sea",
+      status: "STABLE",
+      summary: "Temperature stabilizing. Marine protected areas showing recovery.",
+      impact: "Positive biodiversity indicators",
+      action: "Maintain conservation efforts",
+      color: "green",
+    },
+    {
+      location: "Himalayan Glaciers",
+      status: "AT RISK",
+      summary: "Glacial retreat accelerating. Water supply for 1.9 billion at risk.",
+      impact: "Regional water crisis and flooding",
+      action: "Climate action; water management planning",
+      color: "orange",
+    },
+    {
+      location: "Australian Outback",
+      status: "ACTIVE INCIDENT",
+      summary: "Extreme drought conditions. Record-breaking temperatures detected.",
+      impact: "Agricultural collapse and water shortages",
+      action: "Drought relief measures; water restrictions",
+      color: "red",
+    },
+    {
+      location: "Congo Basin",
+      status: "STABLE",
+      summary: "Forest cover maintained. Conservation efforts successful.",
+      impact: "Carbon sequestration and biodiversity preserved",
+      action: "Continue protection programs",
+      color: "green",
+    },
+    {
+      location: "Maldives Islands",
+      status: "ACTIVE INCIDENT",
+      summary: "Sea levels rising faster than predicted. Islands face submersion.",
+      impact: "Nation-level displacement threat",
+      action: "Emergency adaptation measures; international support",
+      color: "red",
+    },
+    {
+      location: "Yellowstone Region",
+      status: "STABLE",
+      summary: "Ecosystem health indicators positive. Wildlife populations recovering.",
+      impact: "Successful conservation model",
+      action: "Maintain current management",
+      color: "green",
+    },
   ];
 
   return (
@@ -105,14 +201,32 @@ export default function MapPage() {
 
             {/* Interactive Hotspots */}
             {[
-              { top: "30%", left: "25%" },
-              { top: "50%", left: "70%" },
-              { top: "65%", left: "45%" },
+              { top: "15%", left: "30%", type: "red" },
+              { top: "25%", left: "50%", type: "orange" },
+              { top: "35%", left: "15%", type: "green" },
+              { top: "45%", left: "70%", type: "red" },
+              { top: "50%", left: "85%", type: "orange" },
+              { top: "55%", left: "40%", type: "orange" },
+              { top: "60%", left: "60%", type: "green" },
+              { top: "65%", left: "25%", type: "red" },
+              { top: "70%", left: "75%", type: "orange" },
+              { top: "75%", left: "45%", type: "red" },
+              { top: "20%", left: "80%", type: "orange" },
+              { top: "40%", left: "35%", type: "green" },
+              { top: "80%", left: "55%", type: "red" },
+              { top: "30%", left: "65%", type: "green" },
+              { top: "55%", left: "10%", type: "orange" },
             ].map((position, index) => (
               <div
                 key={index}
-                className="absolute w-4 h-4 rounded-full bg-destructive animate-glow-pulse cursor-pointer hover:scale-150 transition-transform"
-                style={position}
+                className={`absolute w-5 h-5 rounded-full cursor-pointer hover:scale-150 transition-transform animate-glow-pulse ${
+                  position.type === "red"
+                    ? "bg-destructive shadow-[0_0_20px_rgba(252,61,33,0.8)]"
+                    : position.type === "orange"
+                    ? "bg-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.8)]"
+                    : "bg-green-500 shadow-[0_0_20px_rgba(34,197,94,0.8)]"
+                }`}
+                style={{ top: position.top, left: position.left }}
               />
             ))}
           </div>
@@ -125,7 +239,7 @@ export default function MapPage() {
           AI-Powered <span className="gradient-text">Insights</span>
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {hotspots.map((hotspot, index) => (
             <div
               key={index}

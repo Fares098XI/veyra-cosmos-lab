@@ -85,7 +85,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Link
               to="/mission"
-              className="px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-accent font-display font-bold text-lg neon-glow hover:scale-105 transition-transform"
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-destructive via-accent to-primary font-display font-bold text-lg shadow-[0_0_30px_rgba(252,61,33,0.5)] hover:shadow-[0_0_50px_rgba(252,61,33,0.7)] hover:scale-105 transition-all"
             >
               Launch Experience
             </Link>
@@ -99,9 +99,10 @@ export default function Home() {
         </div>
 
         {/* Floating Earth Globe Placeholder */}
-        <div className="mt-16 relative w-64 h-64 animate-float">
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 blur-3xl" />
-          <div className="relative w-full h-full rounded-full bg-gradient-to-br from-primary to-accent opacity-30 animate-spin-slow" />
+        <div className="mt-16 relative w-80 h-80 animate-float">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-accent to-destructive blur-3xl opacity-60" />
+          <div className="relative w-full h-full rounded-full bg-gradient-to-br from-primary via-destructive to-cyan-400 shadow-[0_0_60px_rgba(252,61,33,0.6)] animate-spin-slow border-4 border-accent/30" />
+          <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-white/10 blur-2xl" />
         </div>
       </section>
 
