@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Map as MapIcon, Layers, Clock, AlertTriangle, CheckCircle, Info } from "lucide-react";
+import MapComponent from "@/components/MapComponent";
 
 export default function MapPage() {
   const [activeLayer, setActiveLayer] = useState("fires");
@@ -14,6 +15,7 @@ export default function MapPage() {
   const hotspots = [
     {
       location: "Amazon Rainforest",
+      coordinates: [-60.0, -3.0] as [number, number],
       status: "AT RISK",
       summary: "Deforestation rates increased 15% this month. Satellites show 200km² of forest loss.",
       impact: "Critical biodiversity loss and carbon release",
@@ -22,6 +24,7 @@ export default function MapPage() {
     },
     {
       location: "Great Barrier Reef",
+      coordinates: [147.0, -18.0] as [number, number],
       status: "ACTIVE INCIDENT",
       summary: "Coral bleaching event detected. Sea temperatures 2°C above normal.",
       impact: "Severe damage to coral ecosystems",
@@ -30,6 +33,7 @@ export default function MapPage() {
     },
     {
       location: "Sahel Region",
+      coordinates: [15.0, 15.0] as [number, number],
       status: "STABLE",
       summary: "Vegetation recovery observed. Rainfall patterns normalizing.",
       impact: "Positive agricultural outlook",
@@ -38,6 +42,7 @@ export default function MapPage() {
     },
     {
       location: "California Wildfires",
+      coordinates: [-120.0, 37.0] as [number, number],
       status: "ACTIVE INCIDENT",
       summary: "Multiple active fire zones detected. Over 50,000 acres affected.",
       impact: "Air quality degradation and habitat destruction",
@@ -46,6 +51,7 @@ export default function MapPage() {
     },
     {
       location: "Arctic Ice Shelf",
+      coordinates: [0.0, 85.0] as [number, number],
       status: "AT RISK",
       summary: "Ice loss accelerating. 12% reduction in coverage this year.",
       impact: "Sea level rise and polar habitat loss",
@@ -54,6 +60,7 @@ export default function MapPage() {
     },
     {
       location: "Ganges Delta",
+      coordinates: [90.0, 22.0] as [number, number],
       status: "AT RISK",
       summary: "Rising sea levels threatening coastal communities. Erosion increasing.",
       impact: "Displacement of millions and agricultural loss",
@@ -62,6 +69,7 @@ export default function MapPage() {
     },
     {
       location: "Lake Chad",
+      coordinates: [14.0, 13.0] as [number, number],
       status: "AT RISK",
       summary: "Water levels at historic lows. 90% shrinkage since 1960s.",
       impact: "Water scarcity affecting 30 million people",
@@ -70,6 +78,7 @@ export default function MapPage() {
     },
     {
       location: "Borneo Forests",
+      coordinates: [114.0, 0.0] as [number, number],
       status: "ACTIVE INCIDENT",
       summary: "Palm oil expansion causing rapid deforestation. Orangutan habitat threatened.",
       impact: "Species extinction risk and carbon emissions",
@@ -78,6 +87,7 @@ export default function MapPage() {
     },
     {
       location: "Antarctic Peninsula",
+      coordinates: [-60.0, -65.0] as [number, number],
       status: "AT RISK",
       summary: "Warming faster than global average. Ice shelf collapse detected.",
       impact: "Accelerated global sea level rise",
@@ -86,6 +96,7 @@ export default function MapPage() {
     },
     {
       location: "Mediterranean Sea",
+      coordinates: [15.0, 38.0] as [number, number],
       status: "STABLE",
       summary: "Temperature stabilizing. Marine protected areas showing recovery.",
       impact: "Positive biodiversity indicators",
@@ -94,6 +105,7 @@ export default function MapPage() {
     },
     {
       location: "Himalayan Glaciers",
+      coordinates: [85.0, 28.0] as [number, number],
       status: "AT RISK",
       summary: "Glacial retreat accelerating. Water supply for 1.9 billion at risk.",
       impact: "Regional water crisis and flooding",
@@ -102,6 +114,7 @@ export default function MapPage() {
     },
     {
       location: "Australian Outback",
+      coordinates: [133.0, -25.0] as [number, number],
       status: "ACTIVE INCIDENT",
       summary: "Extreme drought conditions. Record-breaking temperatures detected.",
       impact: "Agricultural collapse and water shortages",
@@ -110,6 +123,7 @@ export default function MapPage() {
     },
     {
       location: "Congo Basin",
+      coordinates: [22.0, 0.0] as [number, number],
       status: "STABLE",
       summary: "Forest cover maintained. Conservation efforts successful.",
       impact: "Carbon sequestration and biodiversity preserved",
@@ -118,6 +132,7 @@ export default function MapPage() {
     },
     {
       location: "Maldives Islands",
+      coordinates: [73.0, 3.2] as [number, number],
       status: "ACTIVE INCIDENT",
       summary: "Sea levels rising faster than predicted. Islands face submersion.",
       impact: "Nation-level displacement threat",
@@ -126,6 +141,7 @@ export default function MapPage() {
     },
     {
       location: "Yellowstone Region",
+      coordinates: [-110.0, 44.5] as [number, number],
       status: "STABLE",
       summary: "Ecosystem health indicators positive. Wildlife populations recovering.",
       impact: "Successful conservation model",
@@ -185,51 +201,8 @@ export default function MapPage() {
             </button>
           </div>
 
-          {/* Map Placeholder */}
-          <div className="relative aspect-[16/9] bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl overflow-hidden border border-border/50">
-            {/* Map visualization placeholder */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center space-y-4">
-                <MapIcon className="w-16 h-16 mx-auto text-accent opacity-50" />
-                <p className="text-muted-foreground">
-                  Interactive map visualization
-                  <br />
-                  <span className="text-sm">(Mapbox/Cesium integration)</span>
-                </p>
-              </div>
-            </div>
-
-            {/* Interactive Hotspots */}
-            {[
-              { top: "15%", left: "30%", type: "red" },
-              { top: "25%", left: "50%", type: "orange" },
-              { top: "35%", left: "15%", type: "green" },
-              { top: "45%", left: "70%", type: "red" },
-              { top: "50%", left: "85%", type: "orange" },
-              { top: "55%", left: "40%", type: "orange" },
-              { top: "60%", left: "60%", type: "green" },
-              { top: "65%", left: "25%", type: "red" },
-              { top: "70%", left: "75%", type: "orange" },
-              { top: "75%", left: "45%", type: "red" },
-              { top: "20%", left: "80%", type: "orange" },
-              { top: "40%", left: "35%", type: "green" },
-              { top: "80%", left: "55%", type: "red" },
-              { top: "30%", left: "65%", type: "green" },
-              { top: "55%", left: "10%", type: "orange" },
-            ].map((position, index) => (
-              <div
-                key={index}
-                className={`absolute w-5 h-5 rounded-full cursor-pointer hover:scale-150 transition-transform animate-glow-pulse ${
-                  position.type === "red"
-                    ? "bg-destructive shadow-[0_0_20px_rgba(252,61,33,0.8)]"
-                    : position.type === "orange"
-                    ? "bg-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.8)]"
-                    : "bg-green-500 shadow-[0_0_20px_rgba(34,197,94,0.8)]"
-                }`}
-                style={{ top: position.top, left: position.left }}
-              />
-            ))}
-          </div>
+          {/* Interactive Map */}
+          <MapComponent hotspots={hotspots} />
         </div>
       </section>
 
