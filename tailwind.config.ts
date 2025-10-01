@@ -91,7 +91,30 @@ export default {
         "spin-slow": {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(360deg)" }
-        }
+        },
+        "meteor": {
+          "0%": {
+            transform: "translateY(-100vh) translateX(0) rotate(-45deg)",
+            opacity: "1",
+          },
+          "70%": {
+            opacity: "1",
+          },
+          "100%": {
+            transform: "translateY(100vh) translateX(100px) rotate(-45deg)",
+            opacity: "0",
+          },
+        },
+        "scale-in": {
+          "0%": {
+            transform: "scale(0.8)",
+            opacity: "0",
+          },
+          "100%": {
+            transform: "scale(1)",
+            opacity: "1",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -101,6 +124,8 @@ export default {
         "float": "float 3s ease-in-out infinite",
         "slide-in-right": "slide-in-right 0.4s ease-out",
         "spin-slow": "spin-slow 20s linear infinite",
+        "meteor": "meteor 3s linear infinite",
+        "scale-in": "scale-in 0.6s ease-out",
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

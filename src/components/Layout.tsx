@@ -18,22 +18,51 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
 
   return (
-    <div className="relative min-h-screen">
-      {/* Starfield background */}
-      <div className="starfield fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(107,70,255,0.1),transparent_50%)]" />
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              opacity: Math.random() * 0.7 + 0.3,
-            }}
-          />
-        ))}
+    <div className="relative min-h-screen bg-black">
+      {/* Starfield background with meteors */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        {/* Pure black space background */}
+        <div className="absolute inset-0 bg-black" />
+        
+        {/* Stars */}
+        <div className="absolute inset-0">
+          {[...Array(200)].map((_, i) => (
+            <div
+              key={`star-${i}`}
+              className="absolute bg-white rounded-full"
+              style={{
+                width: `${Math.random() * 2 + 1}px`,
+                height: `${Math.random() * 2 + 1}px`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                opacity: Math.random() * 0.8 + 0.2,
+                animation: `pulse ${Math.random() * 3 + 2}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 3}s`,
+              }}
+            />
+          ))}
+        </div>
+        
+        {/* Meteors/Shooting stars */}
+        <div className="absolute inset-0">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={`meteor-${i}`}
+              className="absolute w-[2px] h-[80px] bg-gradient-to-b from-white via-primary/80 to-transparent animate-meteor"
+              style={{
+                top: `${Math.random() * -20}%`,
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${Math.random() * 2 + 2}s`,
+                boxShadow: '0 0 10px rgba(255,255,255,0.8)',
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Subtle NASA red accent glow */}
+        <div className="absolute top-20 right-20 w-96 h-96 bg-destructive/10 rounded-full blur-[150px]" />
+        <div className="absolute bottom-40 left-20 w-80 h-80 bg-primary/15 rounded-full blur-[120px]" />
       </div>
 
       {/* Navigation */}
