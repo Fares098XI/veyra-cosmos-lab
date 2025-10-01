@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-import { Globe as GlobeIcon, Waves, Gamepad2, Map, BookOpen, Rocket, Sparkles } from "lucide-react";
+import { Globe, Waves, Gamepad2, Map, BookOpen, Rocket, Sparkles } from "lucide-react";
 import earthFromISS from "@/assets/earth-from-iss.jpg";
-import Globe from "@/components/Globe";
 
 export default function Home() {
   const features = [
     {
-      icon: GlobeIcon,
+      icon: Globe,
       title: "Cupola VR",
       description: "Experience Earth observation from the ISS Cupola window",
       path: "/cupola",
@@ -86,7 +85,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Link
               to="/mission"
-              className="px-8 py-4 rounded-xl bg-destructive font-display font-bold text-lg text-white shadow-[0_0_30px_rgba(252,61,33,0.5)] hover:shadow-[0_0_50px_rgba(252,61,33,0.7)] hover:scale-105 transition-all"
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-accent font-display font-bold text-lg neon-glow hover:scale-105 transition-transform"
             >
               Launch Experience
             </Link>
@@ -99,9 +98,10 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Interactive 3D Globe */}
-        <div className="mt-16">
-          <Globe />
+        {/* Floating Earth Globe Placeholder */}
+        <div className="mt-16 relative w-64 h-64 animate-float">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 blur-3xl" />
+          <div className="relative w-full h-full rounded-full bg-gradient-to-br from-primary to-accent opacity-30 animate-spin-slow" />
         </div>
       </section>
 

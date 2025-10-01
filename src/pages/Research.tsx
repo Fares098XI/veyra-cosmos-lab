@@ -150,10 +150,13 @@ export default function Research() {
           ))}
 
           <div className="glass-panel p-8 text-center space-y-4 bg-gradient-to-br from-primary/10 to-accent/10">
-            <h3 className="font-display text-2xl font-bold">Research Content Coming Soon</h3>
+            <h3 className="font-display text-2xl font-bold">Share Your Experience</h3>
             <p className="text-muted-foreground">
-              We're working on curating comprehensive research papers and student journals. Check back soon for updates!
+              Have you used Veyra in your learning journey? Share your insights with the community!
             </p>
+            <button className="px-8 py-3 rounded-xl bg-gradient-to-r from-primary to-accent font-display font-bold neon-glow hover:scale-105 transition-transform">
+              Submit Your Journal
+            </button>
           </div>
         </div>
       </section>
