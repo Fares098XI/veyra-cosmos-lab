@@ -133,17 +133,25 @@ export default function NBL() {
                 )}
               </div>
 
-              {/* Training Button */}
-              <button
-                onClick={() => setIsTraining(!isTraining)}
-                className={`w-full py-4 rounded-xl font-display font-bold transition-all ${
-                  isTraining
-                    ? "bg-destructive/20 text-destructive hover:bg-destructive/30"
-                    : "bg-gradient-to-r from-primary to-accent neon-glow hover:scale-105"
-                }`}
-              >
-                {isTraining ? "Stop Training" : "Start Training Session"}
-              </button>
+              {/* Training Buttons */}
+              <div className="space-y-3">
+                <button
+                  onClick={() => setIsTraining(!isTraining)}
+                  className={`w-full py-4 rounded-xl font-display font-bold transition-all ${
+                    isTraining
+                      ? "bg-destructive/20 text-destructive hover:bg-destructive/30"
+                      : "bg-primary hover:bg-primary/90 hover:scale-105"
+                  }`}
+                >
+                  {isTraining ? "Stop Training" : "Start Training Session"}
+                </button>
+                
+                <button
+                  className="w-full py-4 rounded-xl font-display font-bold bg-destructive hover:bg-destructive/90 transition-all"
+                >
+                  Launch VR NBL Experience →
+                </button>
+              </div>
             </div>
           </div>
         </div>

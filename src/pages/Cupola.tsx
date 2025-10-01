@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Camera, BookOpen, Download, Play, Info } from "lucide-react";
+import { Camera, BookOpen, Play, Info } from "lucide-react";
 import cupolaInterior from "@/assets/cupola-interior.jpg";
 import earthFromISS from "@/assets/earth-from-iss.jpg";
 
@@ -132,9 +132,6 @@ export default function Cupola() {
                         </span>
                       </div>
                       <p className="text-muted-foreground">{hotspot.description}</p>
-                      <button className="text-accent font-medium text-sm hover:underline">
-                        View Full Analysis →
-                      </button>
                     </div>
                   ))}
               </div>
@@ -176,21 +173,6 @@ export default function Cupola() {
         </div>
       </section>
 
-      {/* Teacher Pack CTA */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="glass-panel p-12 text-center space-y-6 bg-gradient-to-br from-primary/10 to-accent/10">
-          <h2 className="font-display text-3xl md:text-4xl font-bold">
-            Educator Resources Available
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Download comprehensive lesson plans, activities, and assessment materials designed for classroom use
-          </p>
-          <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-accent font-display font-bold neon-glow hover:scale-105 transition-transform">
-            <Download className="w-5 h-5" />
-            Download Teacher Pack
-          </button>
-        </div>
-      </section>
     </div>
   );
 }

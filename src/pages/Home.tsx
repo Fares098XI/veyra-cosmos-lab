@@ -51,15 +51,35 @@ export default function Home() {
   return (
     <div className="page-container">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex flex-col items-center justify-center text-center px-4 animate-fade-in">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0 -z-10 overflow-hidden rounded-3xl">
-          <img
-            src={earthFromISS}
-            alt="Earth from ISS Cupola"
-            className="w-full h-full object-cover opacity-30"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/80 to-background" />
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center text-center px-4 animate-fade-in overflow-hidden">
+        {/* Animated Space Background */}
+        <div className="absolute inset-0 -z-10">
+          {/* Deep space gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#000000] via-[#0B2545] to-[#0B2545]" />
+          
+          {/* Stars */}
+          <div className="absolute inset-0">
+            {[...Array(100)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  opacity: Math.random() * 0.7 + 0.3,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${Math.random() * 2 + 2}s`,
+                }}
+              />
+            ))}
+          </div>
+          
+          {/* Red nebula accents */}
+          <div className="absolute top-20 left-10 w-96 h-96 bg-destructive/20 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-destructive/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+          
+          {/* Blue accents */}
+          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-primary/30 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '0.5s' }} />
         </div>
 
         {/* Hero Content */}
@@ -85,13 +105,13 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Link
               to="/mission"
-              className="px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-accent font-display font-bold text-lg neon-glow hover:scale-105 transition-transform"
+              className="px-8 py-4 rounded-xl bg-destructive font-display font-bold text-lg hover:bg-destructive/90 hover:scale-105 transition-all shadow-[0_0_30px_rgba(252,61,33,0.4)]"
             >
               Launch Experience
             </Link>
             <Link
               to="/cupola"
-              className="px-8 py-4 rounded-xl glass-panel font-display font-bold text-lg hover:bg-card/60 transition-all"
+              className="px-8 py-4 rounded-xl bg-primary font-display font-bold text-lg hover:bg-primary/90 hover:scale-105 transition-all"
             >
               Explore Cupola
             </Link>
