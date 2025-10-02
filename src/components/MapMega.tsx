@@ -71,6 +71,7 @@ export default function MapMega({ mode = "all" as Mode }: { mode?: Mode }) {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [counts, setCounts] = useState<Counts>({ hazards: 0, disasters: 0, risks: 0, safe: 0 });
   const [lastError, setLastError] = useState<string | null>(null);
+  const [mapStyle, setMapStyle] = useState<"dark" | "satellite">("dark");
 
   // INIT MAP + LAYERS
   useEffect(() => {
@@ -78,7 +79,7 @@ export default function MapMega({ mode = "all" as Mode }: { mode?: Mode }) {
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: "mapbox://styles/mapbox/dark-v11",
+      style: mapStyle === "dark" ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/satellite-streets-v12",
       center: [10, 20],
       zoom: 1.5,
       projection: { name: "globe" },
@@ -222,7 +223,7 @@ export default function MapMega({ mode = "all" as Mode }: { mode?: Mode }) {
       } catch (e) {}
       mapRef.current = null;
     };
-  }, []);
+  }, [mapStyle]);
 
   // FILTER APPLICATION — retry until layers exist
   useEffect(() => {
@@ -275,6 +276,44 @@ export default function MapMega({ mode = "all" as Mode }: { mode?: Mode }) {
   return (
     <div className="relative">
       <div ref={containerRef} className="w-full h-[640px] rounded-xl overflow-hidden border border-gray-700" />
+      
+      {/* Style Toggle */}
+      <div style={{ position: "absolute", right: 12, top: 12, display: "flex", gap: 8 }}>
+        <button
+          onClick={() => setMapStyle("dark")}
+          style={{
+            background: mapStyle === "dark" ? "rgba(239, 68, 68, 0.9)" : "rgba(0,0,0,0.78)",
+            color: "white",
+            padding: "8px 16px",
+            borderRadius: 8,
+            border: "1px solid rgba(255,255,255,0.2)",
+            cursor: "pointer",
+            fontSize: 12,
+            fontWeight: 600,
+            transition: "all 0.3s"
+          }}
+        >
+          🌑 Dark Mode
+        </button>
+        <button
+          onClick={() => setMapStyle("satellite")}
+          style={{
+            background: mapStyle === "satellite" ? "rgba(239, 68, 68, 0.9)" : "rgba(0,0,0,0.78)",
+            color: "white",
+            padding: "8px 16px",
+            borderRadius: 8,
+            border: "1px solid rgba(255,255,255,0.2)",
+            cursor: "pointer",
+            fontSize: 12,
+            fontWeight: 600,
+            transition: "all 0.3s"
+          }}
+        >
+          🛰️ Satellite
+        </button>
+      </div>
+
+      {/* Debug Info */}
       <div style={{ position: "absolute", left: 12, top: 12, background: "rgba(0,0,0,0.78)", color: "white", padding: 10, borderRadius: 8, fontSize: 12 }}>
         <div><strong>Mapbox token:</strong> {Boolean(mapboxgl.accessToken) ? "✅" : "❌ (set VITE_MAPBOX_TOKEN)"}</div>
         <div style={{ marginTop: 6 }}><strong>Hazards:</strong> {counts.hazards}</div>
