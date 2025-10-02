@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Rocket } from "lucide-react";
 import { useState } from "react";
+import ChatbaseBot from "./ChatbaseBot";
 
 const navigation = [
   { name: "Home", path: "/" },
@@ -165,6 +166,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </footer>
+
+      <ChatbaseBot />
     </div>
   );
 }

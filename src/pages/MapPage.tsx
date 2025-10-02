@@ -1,7 +1,14 @@
 // src/pages/MapPage.tsx
 import { useState, useEffect } from "react";
-import { Map as MapIcon, Layers, Clock, Info } from "lucide-react";
+import { Map as MapIcon, Layers, Clock, Info, AlertTriangle } from "lucide-react";
 import MapMega, { Mode } from "../components/MapMega";
+import BeforeAfterSlider from "../components/BeforeAfterSlider";
+import forestBefore from "../assets/forest-before.jpg";
+import forestAfter from "../assets/forest-after.jpg";
+import antarcticBefore from "../assets/antarctic-before.jpg";
+import antarcticAfter from "../assets/antarctic-after.jpg";
+import stormBefore from "../assets/storm-before.jpg";
+import stormAfter from "../assets/storm-after.jpg";
 
 export default function MapPage() {
   const [activeLayer, setActiveLayer] = useState<Mode>("all");
@@ -110,6 +117,64 @@ export default function MapPage() {
               NASA EONET (Natural Events), NASA FIRMS, MODIS &amp; Landsat, Copernicus EMS, NOAA Sea Level.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Epic Message Section */}
+      <section className="max-w-7xl mx-auto px-4 mt-20 mb-20">
+        <div className="relative glass-panel p-12 text-center overflow-hidden border-2 border-destructive/30">
+          <div className="absolute inset-0 bg-gradient-to-br from-destructive/5 via-transparent to-destructive/10"></div>
+          <div className="relative z-10">
+            <AlertTriangle className="w-16 h-16 text-destructive mx-auto mb-6 animate-pulse" />
+            <h2 className="font-display text-4xl md:text-6xl font-bold mb-6 gradient-text">
+              No Green Dots?
+            </h2>
+            <p className="text-2xl md:text-3xl text-muted-foreground mb-4">
+              That's because <span className="text-destructive font-bold">nothing is truly safe</span>
+            </p>
+            <p className="text-xl md:text-2xl font-display font-bold text-foreground">
+              That's why we MUST take action. Now.
+            </p>
+            <div className="mt-8 h-1 w-32 bg-gradient-to-r from-transparent via-destructive to-transparent mx-auto"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Before & After Comparison Scenes */}
+      <section className="max-w-7xl mx-auto px-4 mb-20">
+        <div className="text-center mb-12">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
+            The Evidence Is <span className="text-destructive">Undeniable</span>
+          </h2>
+          <p className="text-xl text-muted-foreground">
+            Satellite imagery reveals the devastating impact of climate change
+          </p>
+        </div>
+
+        <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-1">
+          <BeforeAfterSlider
+            beforeImage={forestBefore}
+            afterImage={forestAfter}
+            title="Wildfire Devastation"
+            beforeLabel="HEALTHY FOREST"
+            afterLabel="AFTER WILDFIRE"
+          />
+
+          <BeforeAfterSlider
+            beforeImage={antarcticBefore}
+            afterImage={antarcticAfter}
+            title="Antarctic Ice Melt"
+            beforeLabel="2000"
+            afterLabel="2024"
+          />
+
+          <BeforeAfterSlider
+            beforeImage={stormBefore}
+            afterImage={stormAfter}
+            title="Storm Destruction"
+            beforeLabel="BEFORE HURRICANE"
+            afterLabel="AFTER HURRICANE"
+          />
         </div>
       </section>
     </div>
