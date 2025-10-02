@@ -1,46 +1,29 @@
-import { useState } from "react";
-import { Map as MapIcon, Layers, Clock, AlertTriangle, CheckCircle, Info } from "lucide-react";
+// src/pages/MapPage.tsx
+import { useState, useEffect } from "react";
+import { Map as MapIcon, Layers, Clock, Info } from "lucide-react";
+import MapMega, { Mode } from "../components/MapMega";
 
 export default function MapPage() {
-  const [activeLayer, setActiveLayer] = useState("fires");
+  const [activeLayer, setActiveLayer] = useState<Mode>("all");
 
-  const layers = [
-    { id: "fires", name: "Active Fires", icon: "🔥", color: "text-destructive" },
-    { id: "floods", name: "Flood Risk", icon: "🌊", color: "text-cyan-400" },
-    { id: "deforestation", name: "Deforestation", icon: "🌳", color: "text-green-400" },
-    { id: "sealevel", name: "Sea Level", icon: "🌊", color: "text-blue-400" },
-  ];
+  useEffect(() => {
+    const saved = localStorage.getItem("veyra_activeLayer") as Mode | null;
+    if (saved) setActiveLayer(saved);
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("veyra_activeLayer", activeLayer);
+  }, [activeLayer]);
 
-  const hotspots = [
-    {
-      location: "Amazon Rainforest",
-      status: "AT RISK",
-      summary: "Deforestation rates increased 15% this month. Satellites show 200km² of forest loss.",
-      impact: "Critical biodiversity loss and carbon release",
-      action: "Monitor updates; support conservation initiatives",
-      color: "orange",
-    },
-    {
-      location: "Great Barrier Reef",
-      status: "ACTIVE INCIDENT",
-      summary: "Coral bleaching event detected. Sea temperatures 2°C above normal.",
-      impact: "Severe damage to coral ecosystems",
-      action: "Track temperature changes; consult marine advisories",
-      color: "red",
-    },
-    {
-      location: "Sahel Region",
-      status: "STABLE",
-      summary: "Vegetation recovery observed. Rainfall patterns normalizing.",
-      impact: "Positive agricultural outlook",
-      action: "Continue long-term monitoring",
-      color: "green",
-    },
+  const layers: { id: Mode; name: string; icon: string }[] = [
+    { id: "all", name: "All", icon: "✨" },
+    { id: "disasters", name: "Disasters", icon: "❌" },
+    { id: "risks", name: "Risks", icon: "⚠️" },
+    { id: "safe", name: "Safe", icon: "🟢" },
   ];
 
   return (
     <div className="page-container">
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="max-w-7xl mx-auto px-4 text-center mb-12 animate-fade-in">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-sm font-medium mb-6">
           <MapIcon className="w-4 h-4 text-accent" />
@@ -83,113 +66,61 @@ export default function MapPage() {
               ))}
             </div>
 
-            <button className="flex items-center gap-2 px-4 py-2 rounded-lg glass-panel hover:bg-card/60 transition-colors">
+            <button
+              className="flex items-center gap-2 px-4 py-2 rounded-lg glass-panel hover:bg-card/60 transition-colors"
+              onClick={() => alert("Timelapse coming soon 🚀")}
+            >
               <Clock className="w-4 h-4" />
               <span className="text-sm">Timelapse</span>
             </button>
           </div>
 
-          {/* Map Placeholder */}
-          <div className="relative aspect-[16/9] bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl overflow-hidden border border-border/50">
-            {/* Map visualization placeholder */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center space-y-4">
-                <MapIcon className="w-16 h-16 mx-auto text-accent opacity-50" />
-                <p className="text-muted-foreground">
-                  Interactive map visualization
-                  <br />
-                  <span className="text-sm">(Mapbox/Cesium integration)</span>
-                </p>
+          {/* Globe */}
+          <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-border/50 bg-black">
+            <MapMega mode={activeLayer} />
+
+            <div className="absolute top-4 left-4 z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/60 border border-white/10 backdrop-blur text-xs font-bold text-white">
+                <span className="opacity-80">Layer:</span>
+                <span className="uppercase tracking-wide">{layers.find((l) => l.id === activeLayer)?.name}</span>
               </div>
             </div>
 
-            {/* Interactive Hotspots */}
-            {[
-              { top: "30%", left: "25%" },
-              { top: "50%", left: "70%" },
-              { top: "65%", left: "45%" },
-            ].map((position, index) => (
-              <div
-                key={index}
-                className="absolute w-4 h-4 rounded-full bg-destructive animate-glow-pulse cursor-pointer hover:scale-150 transition-transform"
-                style={position}
-              />
-            ))}
+            <div className="absolute bottom-4 left-4 z-10">
+              <div className="bg-black/60 border border-white/10 rounded-xl p-3 backdrop-blur text-sm text-white">
+                <div className="font-bold mb-2">Status Legend</div>
+                <div className="space-y-1">
+                  <LegendRow color="#2ecc71" label="Safe" />
+                  <LegendRow color="#f1c40f" label="At Risk" />
+                  <LegendRow color="#e74c3c" label="Disaster" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* AI Insights Cards */}
-      <section className="max-w-7xl mx-auto px-4">
-        <h2 className="font-display text-4xl font-bold mb-8">
-          AI-Powered <span className="gradient-text">Insights</span>
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {hotspots.map((hotspot, index) => (
-            <div
-              key={index}
-              className="glass-panel p-6 space-y-4 hover:bg-card/60 transition-all animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              {/* Status Badge */}
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-xl font-bold">{hotspot.location}</h3>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
-                    hotspot.color === "red"
-                      ? "bg-destructive/20 text-destructive"
-                      : hotspot.color === "orange"
-                      ? "bg-orange-500/20 text-orange-400"
-                      : "bg-green-500/20 text-green-400"
-                  }`}
-                >
-                  {hotspot.color === "red" ? (
-                    <AlertTriangle className="w-3 h-3" />
-                  ) : (
-                    <CheckCircle className="w-3 h-3" />
-                  )}
-                  {hotspot.status}
-                </span>
-              </div>
-
-              {/* AI Summary */}
-              <p className="text-sm text-foreground/90">{hotspot.summary}</p>
-
-              {/* Impact */}
-              <div className="space-y-1">
-                <div className="text-xs font-bold text-muted-foreground">IMPACT</div>
-                <p className="text-sm text-foreground/80">{hotspot.impact}</p>
-              </div>
-
-              {/* Action */}
-              <div className="space-y-1">
-                <div className="text-xs font-bold text-muted-foreground">SUGGESTED ACTION</div>
-                <p className="text-sm text-foreground/80">{hotspot.action}</p>
-              </div>
-
-              <button className="w-full py-2 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition-colors font-medium text-sm">
-                View Full Analysis →
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Data Attribution */}
-      <section className="max-w-7xl mx-auto px-4 mt-20">
+      {/* Attribution */}
+      <section className="max-w-7xl mx-auto px-4 mt-6">
         <div className="glass-panel p-6 flex items-start gap-4">
           <Info className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
           <div className="text-sm text-muted-foreground">
             <p className="font-bold mb-2">Data Sources & Attribution</p>
             <p>
-              NASA FIRMS (Fire Information), MODIS & Landsat (Earth Observation), Copernicus
-              Emergency Management Service, NOAA Sea Level Data. All imagery and data courtesy of
-              NASA Earth Observatory and ESA Sentinel missions.
+              NASA EONET (Natural Events), NASA FIRMS, MODIS &amp; Landsat, Copernicus EMS, NOAA Sea Level.
             </p>
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+function LegendRow({ color, label }: { color: string; label: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="inline-block w-3 h-3 rounded-full border border-white" style={{ background: color }} />
+      <span className="text-white">{label}</span>
     </div>
   );
 }
