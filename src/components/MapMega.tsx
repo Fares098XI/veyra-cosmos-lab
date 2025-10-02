@@ -2,11 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-// load the CSP-safe worker module in a compatibility-friendly way
-import * as MapboxWorkerModule from "mapbox-gl/dist/mapbox-gl-csp-worker.js";
-const MapboxWorker: any = (MapboxWorkerModule as any).default ?? MapboxWorkerModule;
-// assign worker class (works whether the module exports default or named)
-(mapboxgl as any).workerClass = MapboxWorker;
 
 // optional bundled fallback safe points — keep or remove; if missing set to []
 import localList from "../lib/locations.json";
