@@ -1,42 +1,54 @@
 import { useEffect } from 'react';
 
+// Extend Window interface for Chatbase
+declare global {
+  interface Window {
+    embeddedChatbotConfig?: {
+      chatbotId: string;
+      domain: string;
+    };
+  }
+}
+
 export default function ChatbaseBot() {
   useEffect(() => {
-    // Prevent duplicate injection
-    if (document.querySelector('script[data-chatbase-loaded]')) {
-      return;
-    }
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      // Check if already loaded
+      if (window.embeddedChatbotConfig || document.querySelector('script[src*="chatbase.co/embed"]')) {
+        return;
+      }
 
-    // Inject Chatbase config
-    const configScript = document.createElement('script');
-    configScript.setAttribute('data-chatbase-loaded', 'true');
-    configScript.innerHTML = `
-      window.embeddedChatbotConfig = {
-        chatbotId: "08176bdd-0703-4e38-b29e-cacb4e8c4400",
-        domain: "www.chatbase.co"
-      };
-    `;
-    document.head.appendChild(configScript);
+      try {
+        // Set config on window object
+        window.embeddedChatbotConfig = {
+          chatbotId: "08176bdd-0703-4e38-b29e-cacb4e8c4400",
+          domain: "www.chatbase.co"
+        };
 
-    // Inject Chatbase embed script
-    const chatbaseScript = document.createElement('script');
-    chatbaseScript.src = "https://www.chatbase.co/embed.min.js";
-    chatbaseScript.setAttribute('chatbotId', '08176bdd-0703-4e38-b29e-cacb4e8c4400');
-    chatbaseScript.setAttribute('domain', 'www.chatbase.co');
-    chatbaseScript.defer = true;
-    document.head.appendChild(chatbaseScript);
+        // Create and inject the Chatbase script
+        const script = document.createElement('script');
+        script.src = "https://www.chatbase.co/embed.min.js";
+        script.id = "chatbase-script";
+        script.defer = true;
+        
+        // Add load event listener
+        script.onload = () => {
+          console.log('Chatbase loaded successfully');
+        };
+        
+        script.onerror = () => {
+          console.error('Failed to load Chatbase');
+        };
+        
+        document.body.appendChild(script);
+      } catch (error) {
+        console.error('Error initializing Chatbase:', error);
+      }
+    }, 100);
 
-    // Cleanup function
     return () => {
-      const scripts = document.querySelectorAll('script[data-chatbase-loaded]');
-      scripts.forEach(s => s.remove());
-      
-      const embedScript = document.querySelector('script[src*="chatbase.co/embed.min.js"]');
-      if (embedScript) embedScript.remove();
-      
-      // Remove chatbot iframe if present
-      const chatbotIframe = document.querySelector('iframe[src*="chatbase.co"]');
-      if (chatbotIframe) chatbotIframe.remove();
+      clearTimeout(timer);
     };
   }, []);
 
