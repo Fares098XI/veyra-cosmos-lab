@@ -12,6 +12,16 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "::", // allows external access (e.g. localhost, LAN)
       port: 8080,
+      // Dev proxy: forward any request to /api/* to your Flask backend at :5000
+      proxy: {
+        "/api": {
+          target: "http://localhost:5000",
+          changeOrigin: true,
+          secure: false,
+          // optionally rewrite: remove if you keep same path on backend
+          rewrite: (path) => path, // keep /api prefix
+        },
+      },
     },
     plugins: [
       react(),
@@ -28,4 +38,3 @@ export default defineConfig(({ mode }) => {
     },
   };
 });
-
