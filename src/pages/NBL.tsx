@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { Waves, Info, Play, Award, Droplet, Gauge, Wind } from "lucide-react";
+import { Waves, Info, Play, Award, Droplet, Gauge, Wind, BookOpen } from "lucide-react";
 import nblTraining from "@/assets/nbl-training.jpg";
 import { Slider } from "@/components/ui/slider";
+
+import { Button } from "@/components/ui/button";
 
 export default function NBL() {
   const [weightValue, setWeightValue] = useState(50);
   const [isTraining, setIsTraining] = useState(false);
   const [oxygenLevel, setOxygenLevel] = useState(100);
-  
+
   // Scientific calculations based on Archimedes' principle
   const targetDepth = 12; // meters (NBL pool depth)
   const actualDepth = ((100 - weightValue) / 100) * targetDepth;
@@ -16,7 +18,7 @@ export default function NBL() {
   const neutralZoneMin = 45;
   const neutralZoneMax = 55;
   const isNeutral = weightValue >= neutralZoneMin && weightValue <= neutralZoneMax;
-  
+
   // Simulate oxygen consumption during training
   useEffect(() => {
     if (isTraining && oxygenLevel > 0) {
@@ -32,6 +34,41 @@ export default function NBL() {
     { id: 2, title: "Rail Navigation", duration: "5 min", difficulty: "Medium" },
     { id: 3, title: "Tool Handling", duration: "8 min", difficulty: "Hard" },
   ];
+
+  // === ADDED: Lessons 6-10 (NBL) ===
+  const lessons = [
+    {
+      id: 6,
+      title: "Introduction to the Neutral Buoyancy Lab",
+      description:
+        "Discover NASA’s massive underwater training facility and its role in astronaut preparation.",
+    },
+    {
+      id: 7,
+      title: "The Physics of Neutral Buoyancy",
+      description:
+        "Understand Archimedes’ principle and how it creates microgravity-like conditions on Earth.",
+    },
+    {
+      id: 8,
+      title: "EVA Training in the NBL (Step-by-Step Simulation)",
+      description:
+        "Explore how astronauts rehearse spacewalks underwater with tools, tethers, and practice modules.",
+    },
+    {
+      id: 9,
+      title: "Challenges & Problem-Solving in the NBL",
+      description:
+        "Learn how astronauts adapt to visibility, mobility, and communication challenges in the pool.",
+    },
+    {
+      id: 10,
+      title: "Earth Applications of NBL Training",
+      description:
+        "See how neutral buoyancy techniques are applied in underwater robotics, medicine, and exploration.",
+    },
+  ];
+  // === end added lessons ===
 
   return (
     <div className="page-container">
@@ -83,7 +120,7 @@ export default function NBL() {
               <p className="text-2xl font-bold">{actualDepth.toFixed(1)}m</p>
               <p className="text-xs text-muted-foreground">Target: {targetDepth}m</p>
             </div>
-            
+
             <div className="glass-panel p-4 space-y-2">
               <div className="flex items-center gap-2 text-blue-400">
                 <Droplet className="w-4 h-4" />
@@ -92,7 +129,7 @@ export default function NBL() {
               <p className="text-2xl font-bold">{waterPressure} atm</p>
               <p className="text-xs text-muted-foreground">Water pressure</p>
             </div>
-            
+
             <div className="glass-panel p-4 space-y-2">
               <div className="flex items-center gap-2 text-green-400">
                 <Wind className="w-4 h-4" />
@@ -103,7 +140,7 @@ export default function NBL() {
                 {oxygenLevel < 20 ? "Critical!" : "Nominal"}
               </p>
             </div>
-            
+
             <div className="glass-panel p-4 space-y-2">
               <div className="flex items-center gap-2 text-purple-400">
                 <Award className="w-4 h-4" />
@@ -137,7 +174,7 @@ export default function NBL() {
               </div>
 
               {/* Neutral zone indicator */}
-              <div 
+              <div
                 className="absolute left-0 right-0 bg-green-500/10 border-y border-green-500/30"
                 style={{
                   top: `${neutralZoneMin}%`,
@@ -160,23 +197,23 @@ export default function NBL() {
                 {/* Spacesuit body */}
                 <div className="w-full h-full bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 rounded-xl relative shadow-lg border-2 border-gray-400/50">
                   <div className="absolute inset-3 bg-gradient-to-br from-gray-50 to-gray-200 rounded-lg" />
-                  
+
                   {/* Life support pack */}
                   <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-16 h-20 bg-gradient-to-b from-gray-300 to-gray-400 rounded-md border border-gray-500/30" />
-                  
+
                   {/* Helmet with visor reflection */}
                   <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-20 h-20 bg-gradient-radial from-cyan-300/40 via-cyan-400/30 to-transparent rounded-full border-4 border-cyan-400/60 shadow-lg shadow-cyan-400/40">
                     <div className="absolute inset-2 bg-gradient-to-br from-white/30 to-transparent rounded-full" />
                   </div>
-                  
+
                   {/* Arms */}
                   <div className="absolute top-1/3 -left-2 w-3 h-16 bg-gray-200 rounded-full rotate-12" />
                   <div className="absolute top-1/3 -right-2 w-3 h-16 bg-gray-200 rounded-full -rotate-12" />
-                  
+
                   {/* Status indicator light */}
                   <div className={`absolute top-2 right-2 w-2 h-2 rounded-full ${isNeutral ? 'bg-green-400' : 'bg-red-400'} animate-pulse shadow-lg ${isNeutral ? 'shadow-green-400' : 'shadow-red-400'}`} />
                 </div>
-                
+
                 {/* Bubbles with physics */}
                 {isTraining &&
                   [...Array(8)].map((_, i) => (
@@ -217,7 +254,7 @@ export default function NBL() {
                   </label>
                   <span className="text-2xl font-bold text-accent">{weightValue} kg</span>
                 </div>
-                
+
                 <Slider
                   value={[weightValue]}
                   onValueChange={(value) => setWeightValue(value[0])}
@@ -226,7 +263,7 @@ export default function NBL() {
                   step={1}
                   className="w-full"
                 />
-                
+
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span className="flex flex-col items-start">
                     <span className="font-medium">0 kg</span>
@@ -258,7 +295,7 @@ export default function NBL() {
                       : `✓ Neutral buoyancy achieved! Forces balanced: Weight force (Fg) ≈ Buoyant force (Fb). The astronaut will maintain constant depth without external forces, perfectly simulating microgravity conditions in space.`}
                   </p>
                 </div>
-                
+
                 {isNeutral && (
                   <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
                     <Award className="w-5 h-5 text-green-400" />
@@ -290,7 +327,7 @@ export default function NBL() {
                     {isTraining ? "⏹ Stop Training Session" : "▶ Start Training Session"}
                   </span>
                 </button>
-                
+
                 <button
                   onClick={() => window.alert("VR Experience launching soon! This will connect to a WebXR-enabled NBL simulation.")}
                   className="w-full py-4 rounded-xl font-display font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:via-indigo-700 hover:to-blue-700 transition-all shadow-lg shadow-purple-500/30 text-white group"
@@ -303,7 +340,7 @@ export default function NBL() {
                   </span>
                 </button>
               </div>
-              
+
               <p className="text-xs text-muted-foreground text-center">
                 💡 Tip: Real NBL training sessions last 6+ hours underwater
               </p>
@@ -351,7 +388,40 @@ export default function NBL() {
         </div>
       </section>
 
-      {/* Learning Section */}
+      {/* === NEW: Learning Modules Section (lessons 6-10) === */}
+      <section className="max-w-7xl mx-auto px-4 mb-20 mt-8">
+        <h2 className="font-display text-4xl font-bold mb-8">
+          Learning <span className="gradient-text">Modules</span>
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {lessons.map((lesson, index) => (
+            <div
+              key={lesson.id}
+              className="glass-panel p-6 hover:bg-card/60 transition-all animate-fade-in"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+              </div>
+              <h3 className="font-display text-xl font-bold mb-2">{lesson.title}</h3>
+              <p className="text-muted-foreground mb-4">{lesson.description}</p>
+              <Button
+                onClick={() => (window.location.href = `/lesson${lesson.id}`)}
+                variant="outline"
+                className="w-full"
+              >
+                Start Lesson →
+              </Button>
+            </div>
+          ))}
+        </div>
+      </section>
+      {/* === end new section === */}
+
+      {/* Learning Section (existing — unchanged) */}
       <section className="max-w-7xl mx-auto px-4">
         <div className="glass-panel p-12 space-y-6">
           <h2 className="font-display text-3xl font-bold">
