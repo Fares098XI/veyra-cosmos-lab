@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Camera, BookOpen, Play, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import cupolaInterior from "@/assets/cupola-interior.jpg";
 import earthFromISS from "@/assets/earth-from-iss.jpg";
 
@@ -7,21 +8,11 @@ export default function Cupola() {
   const [selectedHotspot, setSelectedHotspot] = useState<number | null>(null);
 
   const lessons = [
-    {
-      title: "Earth Observation Fundamentals",
-      description: "Learn how astronauts use the Cupola for scientific observation and Earth monitoring",
-      duration: "5 min",
-    },
-    {
-      title: "Disaster Relief Applications",
-      description: "Discover how ISS observations help coordinate emergency response efforts",
-      duration: "8 min",
-    },
-    {
-      title: "Agriculture & Climate Monitoring",
-      description: "Explore space-based agricultural monitoring and climate change research",
-      duration: "10 min",
-    },
+    { id: 1, title: "The Cupola Window", description: "Explore the most breathtaking observation module on the ISS and its dual role as workspace and inspiration." },
+    { id: 2, title: "Orbiting Earth", description: "Experience the incredible speed of the ISS and witness 16 sunrises and sunsets daily." },
+    { id: 3, title: "Monitoring Spacewalks", description: "Learn how the Cupola serves as mission control for extravehicular activities." },
+    { id: 4, title: "Earth Observation & Disaster Monitoring", description: "Discover how astronauts help track hurricanes, wildfires, and climate change from orbit." },
+    { id: 5, title: "Astronaut Photography & Its Impact", description: "Understand how 4 million+ images from space inspire and inform humanity." },
   ];
 
   const hotspots = [
@@ -150,10 +141,10 @@ export default function Cupola() {
           Learning <span className="gradient-text">Modules</span>
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {lessons.map((lesson, index) => (
             <div
-              key={index}
+              key={lesson.id}
               className="glass-panel p-6 hover:bg-card/60 transition-all animate-fade-in"
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -161,13 +152,16 @@ export default function Cupola() {
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                   <BookOpen className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-sm text-muted-foreground">{lesson.duration}</span>
               </div>
               <h3 className="font-display text-xl font-bold mb-2">{lesson.title}</h3>
               <p className="text-muted-foreground mb-4">{lesson.description}</p>
-              <button className="text-accent font-medium text-sm hover:underline">
+              <Button
+                onClick={() => window.location.href = `/lesson${lesson.id}`}
+                variant="outline"
+                className="w-full"
+              >
                 Start Lesson →
-              </button>
+              </Button>
             </div>
           ))}
         </div>
