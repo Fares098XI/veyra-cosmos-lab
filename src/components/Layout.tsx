@@ -12,6 +12,7 @@ const navigation = [
   { name: "Research", path: "/research" },
   { name: "Mission", path: "/mission" },
   { name: "About", path: "/about" },
+  { name; "Powerfull Tools", path: "/tools" },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
