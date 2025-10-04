@@ -195,7 +195,7 @@ export default function NasaTools() {
             <div
               key={index}
               className="glass-panel p-8 space-y-4 animate-fade-in text-left"
-              style={{ animationDelay: ${index * 100}ms }}
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="w-16 h-16 rounded-xl bg-card/60 flex items-center justify-center">
                 <Rocket className="w-8 h-8 text-accent" />
@@ -216,17 +216,3 @@ export default function NasaTools() {
               </div>
 
               <a
-                href={tool.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block mt-3 px-4 py-2 text-sm font-medium rounded-lg bg-accent text-white hover:opacity-90 transition"
-              >
-                Visit Tool →
-              </a>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
-}
