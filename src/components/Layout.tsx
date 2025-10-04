@@ -9,7 +9,7 @@ const navigation = [
   { name: "NBL", path: "/nbl" },
   { name: "Games", path: "/games" },
   { name: "Map", path: "/map" },
-  { name: "Research", path: "/research" },
+  { name: "Blog", path: "/research" },
   { name: "Mission", path: "/mission" },
   { name: "About", path: "/about" },
   { name; "Powerfull Tools", path: "/tools" },
