@@ -1,8 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Rocket, Sun, Moon } from "lucide-react";
+import { Menu, X, Rocket } from "lucide-react";
 import { useState } from "react";
 import ChatbaseBot from "./ChatbaseBot";
-import { useTheme } from "@/contexts/ThemeContext";
 
 const navigation = [
   { name: "Home", path: "/" },
@@ -11,15 +10,16 @@ const navigation = [
   { name: "Games", path: "/games" },
   { name: "Map", path: "/map" },
   { name: "Blog", path: "/research" },
-  { name: "Mission", path: "/mission" },
+  { name: "Powerfull Tools", path: "/tools"},
+  { name: "Progress", path: "/mission" },
   { name: "About", path: "/about" },
-  { name: "Powerfull Tools", path: "/tools" },
+   
+
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="relative min-h-screen bg-black">
@@ -99,17 +99,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Link>
               );
             })}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg glass-panel hover:bg-card/60 transition-all"
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? (
-                <Sun className="w-5 h-5 text-accent" />
-              ) : (
-                <Moon className="w-5 h-5 text-accent" />
-              )}
-            </button>
             <Link
               to="/mission"
               className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-accent font-medium text-sm neon-glow"
