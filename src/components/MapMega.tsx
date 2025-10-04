@@ -148,10 +148,10 @@ export default function MapMega({ mode = "all" as Mode }: { mode?: Mode }) {
         const coords = feature.geometry?.coordinates ?? [0, 0];
         const catList = props.categories ? (Array.isArray(props.categories) ? props.categories.join(", ") : String(props.categories)) : "";
         const statusLabel = props.status === "safe" ? "🟢 SAFE" : props.status === "disaster" ? "❌ DISASTER" : "⚠️ RISK";
-        const html = `<div style="min-width:220px">
-          <h3 style="margin:0 0 6px 0;font-weight:700">${props.name ?? props.title ?? "Event"}</h3>
-          <div style="font-size:12px;opacity:.9;margin-bottom:6px"><strong>Status:</strong> ${statusLabel}<br/><strong>Source:</strong> ${props.source ?? ""}${catList ? "<br/><strong>Categories:</strong> " + catList : ""}</div>
-          <div style="font-size:13px;opacity:.9">${props.description ?? ""}</div>
+        const html = `<div style="min-width:220px;color:#000000;background:#ffffff;padding:12px;border-radius:8px">
+          <h3 style="margin:0 0 6px 0;font-weight:700;color:#000000">${props.name ?? props.title ?? "Event"}</h3>
+          <div style="font-size:12px;margin-bottom:6px;color:#333333"><strong>Status:</strong> ${statusLabel}<br/><strong>Source:</strong> ${props.source ?? ""}${catList ? "<br/><strong>Categories:</strong> " + catList : ""}</div>
+          <div style="font-size:13px;color:#333333">${props.description ?? ""}</div>
         </div>`;
         popup.setLngLat([coords[0], coords[1]]).setHTML(html).addTo(map);
       };

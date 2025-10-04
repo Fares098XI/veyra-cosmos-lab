@@ -103,7 +103,7 @@ export default function NasaTools() {
     {
       title: "DSN Now (Deep Space Network)",
       description:
-        "See live data of NASA’s Deep Space Network, which communicates with spacecraft across the solar system.",
+        "See live data of NASA's Deep Space Network, which communicates with spacecraft across the solar system.",
       filters: ["Communication", "deep space", "network", "communication", "signals"],
       url: "https://eyes.nasa.gov/dsn",
     },
@@ -151,7 +151,7 @@ export default function NasaTools() {
         </h1>
 
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Explore NASA’s most powerful open-access tools, used by scientists, educators, 
+          Explore NASA's most powerful open-access tools, used by scientists, educators, 
           and space enthusiasts to study Earth, track missions, and explore the universe 
           in real time.
         </p>
@@ -216,3 +216,17 @@ export default function NasaTools() {
               </div>
 
               <a
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-3 px-4 py-2 text-sm font-medium rounded-lg bg-accent text-white hover:opacity-90 transition"
+              >
+                Visit Tool →
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

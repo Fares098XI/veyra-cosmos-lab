@@ -18,13 +18,7 @@ export default function Lesson1() {
   };
 
   const handleSubmit = () => {
-    let correctCount = 0;
-    Object.keys(correctAnswers).forEach((key) => {
-      if (answers[key]?.toLowerCase().includes(correctAnswers[key as keyof typeof correctAnswers].toLowerCase())) {
-        correctCount++;
-      }
-    });
-    setScore((correctCount / 5) * 100);
+    setScore(100);
     setShowResults(true);
   };
 
@@ -213,35 +207,35 @@ export default function Lesson1() {
             </Button>
           ) : (
             <div className="space-y-4">
-              <div className={`p-6 rounded-lg ${score === 100 ? "bg-green-500/20" : "bg-orange-500/20"}`}>
+              <div className="p-6 rounded-lg bg-green-500/20">
                 <div className="flex items-center gap-3 mb-2">
-                  {score === 100 ? (
-                    <CheckCircle className="w-6 h-6 text-green-400" />
-                  ) : (
-                    <XCircle className="w-6 h-6 text-orange-400" />
-                  )}
+                  <CheckCircle className="w-6 h-6 text-green-400" />
                   <h3 className="font-display text-2xl font-bold">
-                    Your Score: {score.toFixed(0)}%
+                    Your Score: 100%
                   </h3>
                 </div>
-                {score === 100 ? (
-                  <p className="text-green-400 font-semibold">🎉 Good job! You've mastered this lesson!</p>
-                ) : (
-                  <p className="text-orange-400">Try again to achieve 100% and unlock additional resources!</p>
-                )}
+                <p className="text-green-400 font-semibold mb-4">
+                  🎉 Great job! Remember, your answers don't matter as long as you are learning and improving!
+                </p>
+                
+                {/* Show Correct Answers */}
+                <div className="mt-6 space-y-3 text-sm">
+                  <h4 className="font-bold text-lg mb-3">📝 Answer Key:</h4>
+                  <div className="space-y-2 bg-card/40 p-4 rounded-lg">
+                    <p><strong>Q1:</strong> c) 7</p>
+                    <p><strong>Q2:</strong> False – It is also used for robotics and monitoring spacewalks</p>
+                    <p><strong>Q3:</strong> Because it gives them a direct view of Earth's beauty and fragility, making them feel connected to the planet as one whole</p>
+                    <p><strong>Q4:</strong> 1-a (Robotic arm control → Guides Canadarm2), 2-b (EVA observation → Tracks spacewalks), 3-c (Photography → Captures disasters and climate data)</p>
+                    <p><strong>Q5:</strong> Astronauts can quickly react to unfolding events while satellites follow fixed paths. This human flexibility adds valuable context.</p>
+                  </div>
+                </div>
               </div>
-
-              {score < 100 && (
-                <Button onClick={resetQuiz} variant="outline" className="w-full">
-                  Try Again
-                </Button>
-              )}
             </div>
           )}
         </div>
 
-        {/* Resources - Only show when 100% */}
-        {showResults && score === 100 && (
+        {/* Resources - Always show with results */}
+        {showResults && (
           <div className="glass-panel p-8 space-y-4 animate-fade-in">
             <h2 className="font-display text-3xl font-bold">📚 Additional Resources</h2>
             <ul className="space-y-3">

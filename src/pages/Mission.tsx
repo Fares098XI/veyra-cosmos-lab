@@ -1,4 +1,5 @@
 import { Rocket, Award, Target, TrendingUp, Bot } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Mission() {
   const achievements = [
@@ -16,18 +17,21 @@ export default function Mission() {
       description: "Complete 3 Cupola viewing sessions",
       progress: 66,
       reward: "Cupola Expert Badge",
+      link: "/cupola",
     },
     {
       title: "Zero-G Training",
       description: "Master all NBL training tasks",
       progress: 33,
       reward: "Astronaut Trainee Certificate",
+      link: "/nbl",
     },
     {
       title: "Climate Detective",
       description: "Analyze 5 AI-powered Earth insights",
       progress: 80,
       reward: "Earth Guardian Badge",
+      link: "/map",
     },
   ];
 
@@ -113,9 +117,9 @@ export default function Mission() {
                 <span className="text-sm text-muted-foreground">
                   Reward: {mission.reward}
                 </span>
-                <button className="text-accent font-medium text-sm hover:underline">
+                <Link to={mission.link} className="text-accent font-medium text-sm hover:underline">
                   Continue →
-                </button>
+                </Link>
               </div>
             </div>
           ))}
@@ -157,11 +161,8 @@ export default function Mission() {
             Your Mission <span className="gradient-text">AI Assistant</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Get personalized mission recommendations and learning guidance from your holographic AI companion
+            Get personalized mission recommendations and learning guidance from your AI companion
           </p>
-          <button className="px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-accent font-display font-bold neon-glow hover:scale-105 transition-transform">
-            Talk to AI Assistant
-          </button>
         </div>
       </section>
     </div>
