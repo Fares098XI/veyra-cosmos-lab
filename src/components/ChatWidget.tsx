@@ -1,155 +1,291 @@
-import React, { useState, useRef } from "react";
+// src/components/ChatWidget.tsx
+import React, { useEffect, useRef, useState } from "react";
 
-/**
- * Simple Chat Widget that posts to /api/chat and extracts the assistant text.
- * - App expects your server proxy to be available at the same origin: /api/chat
- * - If you use a different base, set process.env or change `API_BASE`.
- */
+type Msg = { role: "user" | "assistant"; content: string };
 
-const API_BASE = import.meta.env.VITE_API_BASE || ""; // leave blank for same origin
-
-type Message = {
-  id: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-};
+const DISMISS_KEY = "veyra_chat_dismissed_v1";
 
 export default function ChatWidget() {
-  const [messages, setMessages] = useState<Message[]>([
-    { id: "m0", role: "assistant", content: "Hi — ask me about Veyra, the map or a location." },
+  // if user dismissed widget permanently, don't show the toggle button
+  const dismissedInitial = typeof window !== "undefined" && localStorage.getItem(DISMISS_KEY) === "true";
+  const [open, setOpen] = useState(false);
+  const [dismissed, setDismissed] = useState<boolean>(dismissedInitial);
+  const [messages, setMessages] = useState<Msg[]>([
+    { role: "assistant", content: "Hi — ask me about Veyra, the map or a location." },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const boxRef = useRef<HTMLDivElement | null>(null);
 
-  function addMessage(role: Message["role"], content: string) {
-    setMessages((m) => [...m, { id: String(Date.now()) + Math.random().toString(36).slice(2), role, content }]);
-  }
+  // auto-scroll when new messages or open state changes
+  useEffect(() => {
+    if (open) boxRef.current?.scrollTo({ top: boxRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, open]);
 
-  async function handleSend(e?: React.FormEvent) {
-    if (e) e.preventDefault();
-    const trimmed = input.trim();
-    if (!trimmed) return;
-    setError(null);
-    addMessage("user", trimmed);
+  // keyboard: Esc closes widget
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Enter" && (document.activeElement as HTMLElement)?.tagName !== "TEXTAREA") {
+        // handled in input onKeyDown below to avoid double-send; this is a noop
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  async function send() {
+    const text = input.trim();
+    if (!text) return;
+    const userMsg: Msg = { role: "user", content: text };
+    const nextMessages = [...messages, userMsg];
+    setMessages(nextMessages);
     setInput("");
-    inputRef.current?.focus();
-
-    // prepare payload: Chat proxy expects { messages: [{role, content}, ...] }
-    const payload = { messages: [{ role: "user", content: trimmed }] };
-
     setLoading(true);
+
     try {
-      const res = await fetch(`${API_BASE}/api/chat`, {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ messages: nextMessages }),
       });
+      const data = await res.json();
+      // try common response shapes, fall back to data.text or whole json snippet
+      const assistantText =
+        data?.message ??
+        data?.text ??
+        data?.response ??
+        data?.replies?.[0]?.content ??
+        data?.choices?.[0]?.message?.content ??
+        JSON.stringify(data).slice(0, 1000);
 
-      const status = res.status;
-      // try parse json safely
-      let data: any = null;
-      try {
-        data = await res.json();
-      } catch (parseErr) {
-        // non-json or empty
-        throw new Error(`Invalid JSON response from server (HTTP ${status})`);
-      }
-
-      if (!res.ok) {
-        // if server forwarded upstream error, surface helpful message
-        const detail = data?.detail ?? data?.message ?? JSON.stringify(data);
-        throw new Error(`Server error: ${detail}`);
-      }
-
-      // Robust extraction of useful assistant text:
-      // common shapes: { text: "..." } or { message: "..."} or Chatbase-like nested outputs
-      let assistantText: string | null = null;
-
-      if (typeof data === "string") {
-        assistantText = data;
-      } else if (typeof data?.text === "string" && data.text.trim()) {
-        assistantText = data.text;
-      } else if (typeof data?.message === "string" && data.message.trim()) {
-        assistantText = data.message;
-      } else if (Array.isArray(data?.output) && data.output.length) {
-        // support output array with content objects
-        const out0 = data.output[0];
-        if (typeof out0 === "string") assistantText = out0;
-        else if (typeof out0?.content === "string") assistantText = out0.content;
-        else if (typeof out0?.text === "string") assistantText = out0.text;
-      } else if (data?.reply && typeof data.reply === "string") {
-        assistantText = data.reply;
-      } else {
-        // fallback: try find any string field
-        const allStrings = Object.values(data).filter((v) => typeof v === "string");
-        if (allStrings.length) assistantText = String(allStrings[0]);
-      }
-
-      if (!assistantText) {
-        // last fallback: JSON stringify (keeps UI from breaking)
-        assistantText = JSON.stringify(data);
-      }
-
-      addMessage("assistant", assistantText);
-    } catch (err: any) {
-      console.error("ChatWidget error:", err);
-      setError(err?.message ?? String(err));
-      addMessage("assistant", "⚠️ Error: " + (err?.message ?? "Unknown error"));
+      // normalize object -> string
+      setMessages((m) => [...m, { role: "assistant", content: String(assistantText) }]);
+      // keep panel open when receiving reply
+      setOpen(true);
+    } catch (err) {
+      console.error("ChatWidget: error", err);
+      setMessages((m) => [...m, { role: "assistant", content: "Sorry — failed to reach chat server." }]);
     } finally {
       setLoading(false);
     }
   }
 
-  return (
-    <div style={{ width: 360, maxWidth: "92vw", position: "fixed", right: 20, bottom: 20, zIndex: 9999 }}>
-      <div className="glass-panel p-3 rounded-xl shadow-lg" style={{ maxHeight: "70vh", overflow: "hidden" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-          <strong>Veyra Chat</strong>
-          <div style={{ fontSize: 12, opacity: 0.9 }}>{loading ? "Sending..." : "Ready"}</div>
-        </div>
+  function handlePermanentDismiss() {
+    localStorage.setItem(DISMISS_KEY, "true");
+    setDismissed(true);
+    setOpen(false);
+  }
 
-        <div style={{ height: 310, overflowY: "auto", padding: 6, borderRadius: 8 }} className="chat-scroll">
-          {messages.map((m) => (
-            <div key={m.id} style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 12, color: m.role === "user" ? "#9ca3af" : "#60a5fa", fontWeight: 600 }}>
-                {m.role === "user" ? "You" : "Assistant"}
+  function resetDismiss() {
+    localStorage.removeItem(DISMISS_KEY);
+    setDismissed(false);
+  }
+
+  if (dismissed) {
+    // small unobtrusive row to re-enable the widget if accidentally dismissed
+    return (
+      <div style={{ position: "fixed", right: 24, bottom: 24, zIndex: 1000 }}>
+        <button
+          onClick={resetDismiss}
+          style={{
+            padding: "8px 12px",
+            borderRadius: 999,
+            background: "transparent",
+            color: "#9fb3c8",
+            border: "1px solid rgba(255,255,255,0.06)",
+            backdropFilter: "blur(6px)",
+            cursor: "pointer",
+          }}
+          title="Re-enable chat widget"
+        >
+          💬 Re-enable assistant
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* Floating toggle button */}
+      <button
+        onClick={() => setOpen((s) => !s)}
+        aria-label="Toggle chat"
+        style={{
+          position: "fixed",
+          right: 24,
+          bottom: 24,
+          zIndex: 1000,
+          width: 56,
+          height: 56,
+          borderRadius: "50%",
+          background: "#0ea5e9",
+          color: "white",
+          border: "none",
+          boxShadow: "0 8px 26px rgba(2,6,23,.45)",
+          cursor: "pointer",
+          display: dismissed ? "none" : "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 20,
+        }}
+      >
+        💬
+      </button>
+
+      {/* Chat panel */}
+      <div
+        style={{
+          position: "fixed",
+          right: 24,
+          bottom: 96,
+          zIndex: 1000,
+          width: 380,
+          display: open ? "block" : "none",
+        }}
+        role="dialog"
+        aria-label="Veyra assistant"
+      >
+        <div
+          style={{
+            height: 520,
+            display: "flex",
+            flexDirection: "column",
+            background: "linear-gradient(180deg,#071827 0%, #041019 100%)",
+            color: "#E6EEF8",
+            borderRadius: 12,
+            overflow: "hidden",
+            boxShadow: "0 18px 40px rgba(2,6,23,.7)",
+            border: "1px solid rgba(255,255,255,0.04)",
+          }}
+        >
+          {/* Header */}
+          <div
+            style={{
+              padding: "12px 14px",
+              borderBottom: "1px solid rgba(255,255,255,0.03)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 10,
+              background: "linear-gradient(90deg, rgba(6,182,212,0.04), transparent)",
+            }}
+          >
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: "#063f51", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>
+                VA
               </div>
-              <div style={{ marginTop: 4, whiteSpace: "pre-wrap", lineHeight: 1.4 }}>
-                <div className={`p-2 rounded-md ${m.role === "user" ? "bg-card/30" : "bg-blue-600/10"}`}>
-                  {m.content}
-                </div>
+              <div>
+                <div style={{ fontWeight: 700 }}>Veyra Assistant</div>
+                <div style={{ fontSize: 12, color: "#9fb3c8" }}>Ask about Veyra, the map or any location</div>
               </div>
             </div>
-          ))}
-        </div>
 
-        {error && (
-          <div style={{ color: "#ffb4b4", fontSize: 13, marginBottom: 6 }}>
-            Error: {error}
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              {/* Permanent dismiss */}
+              <button
+                onClick={handlePermanentDismiss}
+                title="Dismiss permanently"
+                style={{
+                  background: "none",
+                  color: "#9fb3c8",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 13,
+                }}
+              >
+                Dismiss
+              </button>
+
+              {/* Close panel (temporary) */}
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Close chat"
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  border: "none",
+                  background: "rgba(255,255,255,0.03)",
+                  color: "#9fb3c8",
+                  cursor: "pointer",
+                }}
+              >
+                ✕
+              </button>
+            </div>
           </div>
-        )}
 
-        <form onSubmit={handleSend} style={{ display: "flex", gap: 8, marginTop: 8 }}>
-          <input
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about Veyra, the map or a location..."
-            className="input"
-            style={{ flex: 1, padding: "8px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)", background: "transparent", color: "white" }}
-            disabled={loading}
-          />
-          <button type="submit" disabled={loading} className="btn">
-            {loading ? "…" : "Send"}
-          </button>
-        </form>
+          {/* Messages */}
+          <div ref={boxRef} style={{ padding: 12, overflowY: "auto", flex: 1 }}>
+            {messages.map((m, i) => (
+              <div key={i} style={{ marginBottom: 10, display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
+                <div
+                  style={{
+                    maxWidth: "78%",
+                    display: "inline-block",
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    background: m.role === "user" ? "linear-gradient(90deg,#0b2b3a,#071822)" : "linear-gradient(90deg,#0b3a28,#06341f)",
+                    color: "white",
+                    boxShadow: "inset 0 -1px 0 rgba(0,0,0,0.15)",
+                    fontSize: 13,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  <small style={{ opacity: 0.98, display: "block" }}>{m.content}</small>
+                </div>
+              </div>
+            ))}
 
-        <div style={{ marginTop: 8, fontSize: 12, opacity: 0.8 }}>
-          Server: <code>{API_BASE || "/api"}</code>
+            {loading && (
+              <div style={{ marginTop: 4, color: "#9fb3c8", fontSize: 13 }}>
+                Assistant is typing...
+              </div>
+            )}
+          </div>
+
+          {/* Composer */}
+          <div style={{ display: "flex", gap: 8, padding: 12, borderTop: "1px solid rgba(255,255,255,0.03)" }}>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  send();
+                }
+              }}
+              placeholder="Ask about the map, ISS, or a location..."
+              style={{
+                flex: 1,
+                padding: "10px 12px",
+                borderRadius: 10,
+                border: "none",
+                background: "#03151b",
+                color: "white",
+                outline: "none",
+                fontSize: 14,
+              }}
+            />
+            <button
+              onClick={send}
+              disabled={loading}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 10,
+                background: "#0ea5e9",
+                border: "none",
+                color: "white",
+                cursor: "pointer",
+                fontWeight: 700,
+              }}
+            >
+              Send
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
