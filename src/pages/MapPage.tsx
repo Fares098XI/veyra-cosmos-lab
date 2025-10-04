@@ -127,7 +127,7 @@ export default function MapPage() {
           <div className="relative z-10">
             <AlertTriangle className="w-16 h-16 text-destructive mx-auto mb-6 animate-pulse" />
             <h2 className="font-display text-4xl md:text-6xl font-bold mb-6 gradient-text">
-              No Green Dots?
+              Almost all red dots?
             </h2>
             <p className="text-2xl md:text-3xl text-muted-foreground mb-4">
               That's because <span className="text-destructive font-bold">nothing is truly safe</span>
