@@ -220,7 +220,7 @@ export default function NasaTools() {
             <div
               key={index}
               className="glass-panel p-8 space-y-4 animate-fade-in hover:bg-card/60 transition-all"
-              style={{ animationDelay: ${index * 100}ms }}
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="w-16 h-16 rounded-xl bg-card/60 flex items-center justify-center">
                 <Rocket className="w-8 h-8 text-accent" />
