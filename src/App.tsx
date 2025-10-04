@@ -26,6 +26,11 @@ import Lesson8 from "./pages/Lesson8";
 import Lesson9 from "./pages/Lesson9";
 import Lesson10 from "./pages/Lesson10";
 import Tools from "./pages/Tools";
+import Ai from "./pages/Ai";
+import Game1 from "./pages/Game1";
+import Game2 from "./pages/Game2";
+import VR1 from "./pages/VR1";
+import VR2 from "./pages/VR2";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +51,7 @@ const App = () => (
             <Route path="/mission" element={<Mission />} />
             <Route path="/about" element={<About />} />
             <Route path="/tools" element={<Tools />} />
+            <Route path="/ai" element={<Ai />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/lesson1" element={<Lesson1 />} />
             <Route path="/lesson2" element={<Lesson2 />} />
@@ -57,6 +63,10 @@ const App = () => (
             <Route path="/lesson8" element={<Lesson8 />} />
             <Route path="/lesson9" element={<Lesson9 />} />
             <Route path="/lesson10" element={<Lesson10 />} />
+            <Route path="/game1" element={<Game1 />} />
+            <Route path="/game2" element={<Game2 />} />
+            <Route path="/vr1" element={<VR1 />} />
+            <Route path="/vr2" element={<VR2 />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
