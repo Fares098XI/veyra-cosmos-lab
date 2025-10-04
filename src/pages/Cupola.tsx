@@ -70,10 +70,29 @@ export default function Cupola() {
         <div className="glass-panel p-8 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-3xl font-bold">Interactive Earth View</h2>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition-colors">
-              <Play className="w-5 h-5" />
-              <span className="font-medium">Start 360° Tour</span>
-            </button>
+
+            <div className="flex items-center gap-2">
+              <button
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition-colors"
+                onClick={() => {
+                  // existing Play behaviour left as a UI trigger
+                  // if you want it to do more, replace with actual logic
+                  window.alert("360° Tour starting (demo).");
+                }}
+              >
+                <Play className="w-5 h-5" />
+                <span className="font-medium">Start 360° Tour</span>
+              </button>
+
+              {/* NEW: VR1 button - opens the static VR build (put your build in public/vrs/vr1) */}
+              <button
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm bg-card hover:bg-card/80 ml-2"
+                onClick={() => (window.location.href = "/vr1")}
+                title="Open Cupola VR"
+              >
+                <span className="font-medium">Enter VR</span>
+              </button>
+            </div>
           </div>
 
           {/* Viewer Container */}
@@ -166,7 +185,6 @@ export default function Cupola() {
           ))}
         </div>
       </section>
-
     </div>
   );
 }
