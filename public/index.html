@@ -1,49 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-	<title>New project</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-	
-	<!-- Made with Construct, the game and app creator :: https://www.construct.net -->
-	<meta name="generator" content="Scirra Construct">
-
-
-
-	<link rel="manifest" href="appmanifest.json">
-	<link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
-	<link rel="apple-touch-icon" sizes="256x256" href="icons/icon-256.png">
-	<link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
-	<link rel="icon" type="image/png" href="icons/icon-512.png">
-
-	<link rel="stylesheet" href="style.css">
-
-
-
-</head> 
- 
+  <meta charset="UTF-8">
+  <title>A-Frame 360 Video VR - Smooth Slow Motion</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
+</head>
 <body>
+  <a-scene background="color: #000">
 
-	
+    <!-- Assets -->
+    <a-assets>
+      <video id="myVideo" autoplay loop muted playsinline crossorigin="anonymous">
+        <source src="video.mp4" type="video/mp4">
+      </video>
+    </a-assets>
 
-<script>
-if (location.protocol.substr(0, 4) === "file")
-{
-	alert("Web exports won't work until you upload them. (When running on the file: protocol, browsers block many features from working for security reasons.)");
-}
-</script>
-	
-	<noscript>
-		<div id="notSupportedWrap">
-			<h2 id="notSupportedTitle">This content requires JavaScript</h2>
-			<p class="notSupportedMessage">JavaScript appears to be disabled. Please enable it to view this content.</p>
-		</div>
-	</noscript>
-	<script src="scripts/modernjscheck.js"></script>
-	<script src="scripts/supportcheck.js"></script>
-	<script src="scripts/offlineclient.js" type="module"></script>
-	<script src="scripts/main.js" type="module"></script>
-	<script src="scripts/register-sw.js" type="module"></script>
+    <!-- 360 video environment -->
+    <a-videosphere id="videoSphere" src="#myVideo"></a-videosphere>
 
-</body> 
+    <!-- Camera -->
+    <a-entity camera look-controls position="0 1.6 0"></a-entity>
+
+    <!-- Script for smooth slow motion -->
+    <script>
+      const video = document.querySelector('#myVideo');
+      const videosphere = document.querySelector('#videoSphere');
+
+      // Set playback rate to 0.1 for 10x slower
+      video.playbackRate = 0.1;
+      video.preservesPitch = true;
+
+      // Ensure video starts playing
+      video.play().catch(err => console.log('Video play error:', err));
+
+      // Force the videosphere material to update every frame for smoothness
+      function updateVideoTexture() {
+        if (videosphere && videosphere.getObject3D('mesh')) {
+          videosphere.getObject3D('mesh').material.map.needsUpdate = true;
+        }
+        requestAnimationFrame(updateVideoTexture);
+      }
+
+      updateVideoTexture();
+    </script>
+
+  </a-scene>
+</body>
 </html>
