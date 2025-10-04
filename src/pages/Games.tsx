@@ -8,7 +8,7 @@ export default function Games() {
       icon: Camera,
       title: "Cupola View Challenge",
       description:
-        "Identify Earth features from ISS photographs after passing some challenges - Active.\n\n📖 Instructions: Add detailed rules or tips for this game here so players know how to play.",
+        "Identify Earth features from ISS photographs after passing some challenges - Active.\n\n📖 Instructions: when on glass in the upper floor to the far right press E to start the gand snd after winning, go down to the far left.",
       color: "from-primary to-cyan-500",
       difficulty: "Easy",
       players: "Running",
@@ -18,7 +18,7 @@ export default function Games() {
       icon: Waves,
       title: "NBL Balance Master",
       description:
-        "Master neutral buoyancy in timed challenges by helping the spacecraft reach its destination - Active.\n\n📖 Instructions: Add details on controls, scoring, or what users must achieve in this game.",
+        "Master neutral buoyancy in timed challenges by helping the spacecraft reach its destination - Active.\n\n📖 Instructions: Use The arrows only and have fun. ",
       color: "from-accent to-purple-500",
       difficulty: "Medium",
       players: "Running",
