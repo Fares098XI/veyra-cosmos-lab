@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Space Drift — multi-level</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+    --glass: rgba(255,255,255,0.06);
+    --glass-2: rgba(255,255,255,0.04);
+    --accent: #3ad7ff;
+    --accent-2: #6bffb8;
+    --warn: #ff9a76;
+    --hud-fg: #eaf9ff;
+  }
+  html,body{height:100%;margin:0;background:#02020a;color:var(--hud-fg);font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
+  canvas{display:block; width:100vw; height:100vh; background:#000}
+  /* full-screen UI */
+  #ui{position:fixed;inset:0;pointer-events:none}
+  .panel{position:fixed;pointer-events:auto;padding:10px;border-radius:12px;background:linear-gradient(180deg,var(--glass),var(--glass-2));backdrop-filter:blur(6px);box-shadow:0 6px 30px rgba(0,0,0,0.6)}
+  #topbar{left:16px;top:16px;display:flex;gap:10px;align-items:center}
+  #title{font-weight:700;font-size:18px}
+  #levelBadge{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#003; padding:6px 10px;border-radius:999px;font-weight:700}
+  #hud{right:16px;top:16px;text-align:right;min-width:180px}
+  #hud .row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+  #progressBar{height:12px;background:rgba(255,255,255,0.06);border-radius:8px;overflow:hidden;margin-top:8px}
+  #progressBar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%}
+  #minimap{position:fixed;right:16px;bottom:16px;width:180px;height:110px;border-radius:10px;padding:8px}
+  #controls{left:50%;transform:translateX(-50%);bottom:16px;padding:8px 14px;border-radius:999px}
+  #overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:60}
+  .big{font-size:28px;font-weight:800;letter-spacing:0.6px}
+  .sub{opacity:0.9;font-size:13px;margin-top:6px}
+  button.btn{pointer-events:auto;border:0;padding:10px 14px;border-radius:10px;background:linear-gradient(180deg,#ffffff05,#ffffff02);color:var(--hud-fg);cursor:pointer;font-weight:700}
+  button.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#003}
+  .muted{opacity:0.8;font-size:13px}
+  #errors{position:fixed;left:16px;bottom:16px;color:#ffb3b3;background:rgba(0,0,0,0.45);padding:8px;border-radius:8px;max-width:40vw;display:none;z-index:70}
+  /* small helpers */
+  .flex{display:flex;gap:8px;align-items:center}
+  .pill{padding:6px 10px;border-radius:999px;background:rgba(0,0,0,0.35)}
+  @media (max-width:480px){ #minimap{display:none} }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div id="topbar" class="panel">
+    <div id="title">Space Drift</div>
+    <div id="levelBadge">LEVEL 1</div>
+    <div class="muted">— Collect items & dock at the station</div>
+  </div>
+
+  <div id="hud" class="panel">
+    <div class="row"><div class="muted">Items</div><div id="col">0</div></div>
+    <div class="row"><div class="muted">Total</div><div id="tot">0</div></div>
+    <div id="progressBar"><i id="progFill"></i></div>
+    <div class="row" style="margin-top:8px"><div class="muted">Lives</div><div id="lives">3</div></div>
+    <div class="row"><div class="muted">Score</div><div id="score">0</div></div>
+  </div>
+
+  <div id="controls" class="panel">
+    <div class="flex">
+      <div class="pill muted">W/A/S/D or Arrows — Move</div>
+      <div class="pill muted">Space — Brake</div>
+      <button id="btnPause" class="btn">Pause</button>
+      <button id="btnRestart" class="btn">Restart</button>
+    </div>
+  </div>
+
+  <div id="minimap" class="panel">
+    <canvas id="mini" width="160" height="80" style="display:block;width:100%;height:100%"></canvas>
+  </div>
+
+  <div id="overlay"></div>
+  <div id="errors" role="alert"></div>
+</div>
+
+<script>
+(() => {
+  // ---------- Canvas + resize ----------
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  function fit(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+  addEventListener('resize', fit);
+  fit();
+
+  // UI refs
+  const HUD_COL = document.getElementById('col');
+  const HUD_TOT = document.getElementById('tot');
+  const PROG = document.getElementById('progFill');
+  const LEVEL_BADGE = document.getElementById('levelBadge');
+  const LIVES_EL = document.getElementById('lives');
+  const SCORE_EL = document.getElementById('score');
+  const OVERLAY = document.getElementById('overlay');
+  const ERR = document.getElementById('errors');
+  const MINI = document.getElementById('mini'); const mctx = MINI.getContext('2d');
+
+  // ---------- World & levels ----------
+  const LEVELS = [
+    { name: 'Training Orbit', worldW:2000, worldH:1400, items:4, debris:8, debrisSpeed:40, timeLimit:0, stationOffset:{x:700,y:40}, lives:3, theme: 'calm' },
+    { name: 'Meteor Belt', worldW:2600, worldH:1800, items:6, debris:14, debrisSpeed:70, timeLimit:120, stationOffset:{x:600,y:0}, lives:3, theme:'storm' },
+    { name: 'High Drift', worldW:3600, worldH:2300, items:8, debris:22, debrisSpeed:110, timeLimit:180, stationOffset:{x:500,y:-30}, lives:2, theme:'hard' }
+  ];
+  let currentLevelIndex = 0;
+
+  // ---------- Asset candidate names (compatibility) ----------
+  const CANDIDATES = {
+    bg: ['assets/bg.gif','assets/bg.png','assets/background.gif','assets/background.png'],
+    ship: ['assets/spaceship.png','assets/player.png','assets/ship.png','assets/astronaut.png'],
+    station: ['assets/station.png','assets/space_station.png'],
+    item: ['assets/item.png','assets/item1.png','assets/collectible.png'],
+    debris: ['assets/debris1.png','assets/debris2.png','assets/debris3.png','assets/debris4.png']
+  };
+
+  function loadImage(path){
+    return new Promise((res,rej)=>{
+      const img = new Image(); img.onload = () => res(img); img.onerror = () => rej(path); img.src = path;
+    });
+  }
+
+  async function loadAny(list){
+    for (const p of list){
+      try{ const img = await loadImage(p); console.log('Loaded',p); return {img,path:p}; }catch(e){}
+    }
+    return null;
+  }
+
+  function makePlaceholder(w,h,label,color='#666'){
+    const cn = document.createElement('canvas'); cn.width = w; cn.height = h;
+    const g = cn.getContext('2d');
+    g.fillStyle = color; g.fillRect(0,0,w,h);
+    g.fillStyle = '#000'; g.textAlign='center'; g.font = Math.floor(Math.min(w,h)/5)+'px sans-serif';
+    g.fillText(label, w/2, h/2 + (Math.min(w,h)/12));
+    const img = new Image(); img.src = cn.toDataURL(); return img;
+  }
+
+  function makeStarTile(size=512, tint=0){
+    const cn = document.createElement('canvas'); cn.width = size; cn.height = size; const g = cn.getContext('2d');
+    g.fillStyle = '#000'; g.fillRect(0,0,size,size);
+    for (let i=0;i<650;i++){
+      g.fillStyle = Math.random()>0.96 ? '#fff' : (tint===1? '#9cf' : tint===2? '#ffd' : '#9fc');
+      const x = Math.random()*size, y = Math.random()*size;
+      g.fillRect(x,y, Math.random()*2+0.3, Math.random()*2+0.3);
+    }
+    const img = new Image(); img.src = cn.toDataURL(); return img;
+  }
+
+  // ---------- State ----------
+  let assets = null;
+  let nowLevel = null;
+  let ship = null, station = null, debrisList = [], items = [], particles = [];
+  let lastTime = 0, running = false, paused = false;
+  let score = 0;
+
+  // ---------- Load assets (tries candidates) ----------
+  async function loadAll(){
+    const miss = [];
+    const res = {bg:null, ship:null, station:null, item:null, debris:[]};
+
+    const bgRes = await loadAny(CANDIDATES.bg);
+    res.bg = bgRes ? bgRes.img : makeStarTile(512,0);
+    if (!bgRes) miss.push('bg');
+
+    const shipRes = await loadAny(CANDIDATES.ship);
+    res.ship = shipRes ? shipRes.img : makePlaceholder(96,96,'SHIP','#3ab');
+    if (!shipRes) miss.push('ship');
+
+    const stRes = await loadAny(CANDIDATES.station);
+    res.station = stRes ? stRes.img : makePlaceholder(160,160,'STN','#fa0');
+    if (!stRes) miss.push('station');
+
+    const itRes = await loadAny(CANDIDATES.item);
+    res.item = itRes ? itRes.img : makePlaceholder(48,48,'ITM','#9f6');
+    if (!itRes) miss.push('item');
+
+    for (const dpath of CANDIDATES.debris){
+      try{ const img = await loadImage(dpath); res.debris.push(img); console.log('Loaded debris',dpath); }catch(e){}
+    }
+    if (res.debris.length===0){
+      res.debris.push(makePlaceholder(64,64,'D1','#888'));
+      res.debris.push(makePlaceholder(56,56,'D2','#777'));
+      res.debris.push(makePlaceholder(72,48,'D3','#666'));
+      miss.push('debris');
+    }
+
+    if (miss.length){ ERR.style.display='block'; ERR.textContent = 'Missing assets: ' + miss.join(', ') + ' — placeholders used.'; } else { ERR.style.display='none'; }
+
+    return res;
+  }
+
+  // ---------- Init level ----------
+  function initLevel(idx){
+    const lvl = LEVELS[idx]; nowLevel = JSON.parse(JSON.stringify(lvl)); // copy
+    currentLevelIndex = idx;
+    LEVEL_BADGE.textContent = 'LEVEL ' + (idx+1);
+    document.getElementById('title').textContent = 'Space Drift — ' + nowLevel.name;
+
+    // world
+    const WORLD_W = nowLevel.worldW, WORLD_H = nowLevel.worldH;
+
+    // items
+    items = [];
+    for (let i=0;i<nowLevel.items;i++){
+      items.push({ x: 180 + Math.random()*(WORLD_W-360), y: 160 + Math.random()*(WORLD_H-320), size: 44, collected:false });
+    }
+    HUD_TOT.textContent = items.length; HUD_COL.textContent = 0;
+
+    // debris
+    debrisList = [];
+    for (let i=0;i<nowLevel.debris;i++){
+      const spr = assets.debris[Math.floor(Math.random()*assets.debris.length)];
+      const baseW = spr.width || 64; const scale = 0.45 + Math.random()*1.1; const w = baseW*scale; const h = (spr.height/spr.width||1)*w;
+      debrisList.push({ x: 100 + Math.random()*(WORLD_W-200), y: 100 + Math.random()*(WORLD_H-200), vx: (Math.random()*2-1)*nowLevel.debrisSpeed, vy:(Math.random()*2-1)*nowLevel.debrisSpeed, sprite:spr, width:w, height:h, radius:Math.max(w,h)/2*0.9, angle:Math.random()*Math.PI*2, spin:(Math.random()*2-1)*0.6 });
+    }
+
+    // station
+    station = { x: WORLD_W/2 + nowLevel.stationOffset.x, y: WORLD_H/2 + nowLevel.stationOffset.y, width: 160, height: 160, radius: 90 };
+
+    // ship
+    ship = { x: WORLD_W/2, y: WORLD_H/2, vx:0, vy:0, angle:-Math.PI/2, width:64, height:64, radius:30, thrust:900, rotateSpeed: Math.PI*1.8, damping:0.9996, controlDisabledUntil:0 };
+
+    running = true; paused = false; lastTime = performance.now(); particles = [];
+
+    // level metadata
+    ship.worldW = WORLD_W; ship.worldH = WORLD_H;
+    ship.lives = nowLevel.lives; LIVES_EL.textContent = ship.lives;
+    score = 0; SCORE_EL.textContent = score;
+
+    // background variation
+    if (idx===0) assets.bg = makeStarTile(512,0);
+    if (idx===1) assets.bg = makeStarTile(512,1);
+    if (idx===2) assets.bg = makeStarTile(512,2);
+
+    // show intro overlay
+    showOverlay(`<div style="text-align:center"><div class="big">${nowLevel.name}</div><div class="sub">Level ${idx+1} — Collect ${items.length} items and dock</div><div style="margin-top:12px"><button class="btn primary" id="startBtn">Start</button></div></div>`);
+    document.getElementById('startBtn').addEventListener('click', ()=>{ hideOverlay(); lastTime = performance.now(); requestAnimationFrame(loop); });
+
+    updateHUD();
+  }
+
+  function updateHUD(){
+    HUD_COL.textContent = items.filter(i=>i.collected).length;
+    HUD_TOT.textContent = items.length;
+    const pct = Math.round((HUD_COL.textContent / items.length) * 100);
+    PROG.style.width = (isNaN(pct)?0:pct) + '%';
+    LIVES_EL.textContent = ship.lives;
+    SCORE_EL.textContent = score;
+  }
+
+  // ---------- Particles (engine beam + sparks) ----------
+  function spawnEngineParticle(px,py,ax,ay){
+    const speed = 60 + Math.random()*80;
+    const perp = (Math.random()-0.5) * 40;
+    particles.push({ x:px + (Math.random()-0.5)*6, y:py + (Math.random()-0.5)*6, vx:-ax*speed + (Math.random()-0.5)*40 + ship.vx*0.2, vy:-ay*speed + (Math.random()-0.5)*40 + ship.vy*0.2, life:0.45 + Math.random()*0.4, size:6 + Math.random()*8 });
+  }
+
+  // ---------- Update ----------
+  function update(dt, nowSec){
+    const canControl = nowSec >= ship.controlDisabledUntil;
+    // rotation & thrust
+    if (canControl){
+      if (keys['KeyA']||keys['ArrowLeft']) ship.angle -= ship.rotateSpeed * dt;
+      if (keys['KeyD']||keys['ArrowRight']) ship.angle += ship.rotateSpeed * dt;
+      if (keys['KeyW']||keys['ArrowUp']){
+        ship.vx += Math.cos(ship.angle) * ship.thrust * dt; ship.vy += Math.sin(ship.angle) * ship.thrust * dt;
+        const backX = ship.x - Math.cos(ship.angle)*(ship.height/2 + 8); const backY = ship.y - Math.sin(ship.angle)*(ship.height/2 + 8);
+        const dirX = Math.cos(ship.angle), dirY = Math.sin(ship.angle);
+        const count = Math.max(1, Math.floor(7*dt*60)); for (let i=0;i<count;i++) spawnEngineParticle(backX,backY,dirX,dirY);
+        ship.isThrusting = true;
+      } else ship.isThrusting = false;
+      if (keys['KeyS']||keys['ArrowDown']){ ship.vx -= Math.cos(ship.angle)*ship.thrust*0.35*dt; ship.vy -= Math.sin(ship.angle)*ship.thrust*0.35*dt; }
+      if (keys['Space']){ ship.vx *= 0.92; ship.vy *= 0.92; }
+    }
+
+    // damping & clamp
+    ship.vx *= Math.pow(ship.damping, dt*60); ship.vy *= Math.pow(ship.damping, dt*60);
+    const MAX_SPEED = 1400; const sp = Math.hypot(ship.vx, ship.vy);
+    if (sp>MAX_SPEED){ const s = MAX_SPEED/sp; ship.vx *= s; ship.vy *= s; }
+
+    // integrate
+    ship.x += ship.vx * dt; ship.y += ship.vy * dt;
+    ship.x = Math.max(0, Math.min(ship.worldW, ship.x)); ship.y = Math.max(0, Math.min(ship.worldH, ship.y));
+
+    // debris
+    for (let d of debrisList){ d.x += d.vx * dt; d.y += d.vy * dt; d.angle += d.spin * dt;
+      if (d.x < 0){ d.x = 0; d.vx *= -0.45; d.spin *= -0.6; }
+      if (d.x > ship.worldW){ d.x = ship.worldW; d.vx *= -0.45; d.spin *= -0.6; }
+      if (d.y < 0){ d.y = 0; d.vy *= -0.45; d.spin *= -0.6; }
+      if (d.y > ship.worldH){ d.y = ship.worldH; d.vy *= -0.45; d.spin *= -0.6; }
+    }
+
+    // collect items
+    let collectedNow = 0;
+    for (let it of items){ if (it.collected) continue; const dx = ship.x - it.x, dy = ship.y - it.y; if (Math.hypot(dx,dy) < ship.radius + it.size/2){ it.collected = true; collectedNow++; score += 100; showMsg('Collected — weightlessness = free fall', 900); }}
+    if (collectedNow) updateHUD();
+
+    // collisions ship vs debris (softer)
+    for (let d of debrisList){ const dx = ship.x - d.x, dy = ship.y - d.y, dist = Math.hypot(dx,dy); if (dist < ship.radius + d.radius){ const nx = dx/(dist||1), ny = dy/(dist||1); const overlap = (ship.radius + d.radius) - dist; const impulse = 160 + overlap*80; ship.vx = clamp(ship.vx + nx*impulse + d.vx*0.4, -1200,1200); ship.vy = clamp(ship.vy + ny*impulse + d.vy*0.4, -1200,1200); ship.controlDisabledUntil = nowSec + 0.45; d.vx -= nx*30; d.vy -= ny*30; ship.lives -= 1; LIVES_EL.textContent = ship.lives; showMsg('Hit debris — controls disabled', 900); if (ship.lives<=0) loseLife(); }}
+
+    // particles update
+    for (let i=particles.length-1;i>=0;i--){ const p=particles[i]; p.x += p.vx*dt; p.y += p.vy*dt; p.life -= dt; if (p.life<=0) particles.splice(i,1); }
+
+    // check docking
+    const dxs = ship.x - station.x, dys = ship.y - station.y;
+    const collectedCount = items.filter(i=>i.collected).length;
+    if (collectedCount === items.length && Math.hypot(dxs,dys) < ship.radius + station.radius){ // success
+      running = false; score += 500; updateHUD(); showLevelComplete(); }
+
+    updateHUD();
+  }
+
+  function loseLife(){ running = false; showOverlay(`<div style="text-align:center"><div class="big">Ship Damaged</div><div class="sub">You lost all lives</div><div style="margin-top:12px"><button class="btn primary" id="retryBtn">Retry Level</button> <button class="btn" id="menuBtn">Menu</button></div></div>`);
+    document.getElementById('retryBtn').addEventListener('click', ()=>{ hideOverlay(); initLevel(currentLevelIndex); });
+    document.getElementById('menuBtn').addEventListener('click', ()=>{ hideOverlay(); showMainMenu(); });
+  }
+
+  function showLevelComplete(){ showOverlay(`<div style="text-align:center"><div class="big">Docking Successful!</div><div class="sub">Level complete — Score +500</div><div style="margin-top:12px"><button class="btn primary" id="nextBtn">Next Level</button> <button class="btn" id="againBtn">Play Again</button></div></div>`);
+    document.getElementById('nextBtn').addEventListener('click', ()=>{ hideOverlay(); if (currentLevelIndex < LEVELS.length-1) initLevel(currentLevelIndex+1); else showOverlay(`<div style="text-align:center"><div class="big">All Missions Complete</div><div class="sub">Final Score: ${score}</div><div style="margin-top:12px"><button class="btn primary" id="toMenu">Back to Menu</button></div></div>`); document.getElementById('toMenu').addEventListener('click', ()=>{ hideOverlay(); showMainMenu(); }); });
+    document.getElementById('againBtn').addEventListener('click', ()=>{ hideOverlay(); initLevel(currentLevelIndex); });
+  }
+
+  // ---------- Draw ----------
+  function draw(){
+    // camera center
+    let camX = ship.x - canvas.width/2, camY = ship.y - canvas.height/2;
+    camX = clamp(camX, 0, Math.max(0, ship.worldW - canvas.width)); camY = clamp(camY, 0, Math.max(0, ship.worldH - canvas.height));
+
+    // clear
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // parallax background
+    const parallax = 0.56; const tileW = assets.bg.width || canvas.width; const tileH = assets.bg.height || canvas.height;
+    const baseX = ((-camX * parallax) % tileW + tileW) % tileW; const baseY = ((-camY * parallax) % tileH + tileH) % tileH;
+    const cols = Math.ceil(canvas.width / tileW) + 1; const rows = Math.ceil(canvas.height / tileH) + 1;
+    for (let ix=-1; ix<=cols; ix++){ for (let iy=-1; iy<=rows; iy++){ ctx.drawImage(assets.bg, baseX + ix*tileW, baseY + iy*tileH, tileW, tileH); }}
+
+    // items
+    for (let it of items){ if (it.collected) continue; const sx = it.x - camX, sy = it.y - camY; ctx.drawImage(assets.item, sx - it.size/2, sy - it.size/2, it.size, it.size); }
+
+    // debris (rotated)
+    for (let d of debrisList){ const sx = d.x - camX, sy = d.y - camY; ctx.save(); ctx.translate(sx, sy); ctx.rotate(d.angle); ctx.globalAlpha = 0.95; ctx.drawImage(d.sprite, -d.width/2, -d.height/2, d.width, d.height); ctx.globalAlpha = 1; ctx.restore(); }
+
+    // station
+    const sxStat = station.x - camX, syStat = station.y - camY; ctx.drawImage(assets.station, sxStat - station.width/2, syStat - station.height/2, station.width, station.height);
+
+    // engine beam (cone) behind ship if thrusting
+    const sx = ship.x - camX, sy = ship.y - camY; if (ship.isThrusting){ ctx.save(); const backX = sx - Math.cos(ship.angle)*(ship.height/2 + 6), backY = sy - Math.sin(ship.angle)*(ship.height/2 + 6); const coneLen = 120 + Math.random()*20; const ang = ship.angle; const leftX = backX - Math.cos(ang - Math.PI/2)*20, leftY = backY - Math.sin(ang - Math.PI/2)*20; const rightX = backX + Math.cos(ang - Math.PI/2)*20, rightY = backY + Math.sin(ang - Math.PI/2)*20; const tipX = backX - Math.cos(ang)*coneLen, tipY = backY - Math.sin(ang)*coneLen; const g = ctx.createLinearGradient(backX,backY,tipX,tipY); g.addColorStop(0, 'rgba(0,220,255,0.9)'); g.addColorStop(0.6, 'rgba(80,200,255,0.25)'); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(leftX,leftY); ctx.lineTo(rightX,rightY); ctx.lineTo(tipX,tipY); ctx.closePath(); ctx.globalCompositeOperation = 'lighter'; ctx.fill(); ctx.globalCompositeOperation = 'source-over'; ctx.restore(); }
+
+    // particles
+    for (let p of particles){ const px = p.x - camX, py = p.y - camY; const alpha = clamp(p.life/0.6,0,1); const grd = ctx.createRadialGradient(px,py,0,px,py,p.size*2); grd.addColorStop(0, `rgba(0,220,255,${alpha})`); grd.addColorStop(0.5, `rgba(50,180,255,${alpha*0.6})`); grd.addColorStop(1, `rgba(0,0,0,0)`); ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(px,py,p.size*1.6,0,Math.PI*2); ctx.fill(); }
+
+    // ship
+    ctx.save(); ctx.translate(sx, sy); ctx.rotate(ship.angle + Math.PI/2); ctx.drawImage(assets.ship, -ship.width/2, -ship.height/2, ship.width, ship.height); ctx.restore();
+
+    // HUD overlays: world boundary (subtle)
+    ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.02)'; ctx.lineWidth = 2; const wx = -camX, wy=-camY; ctx.strokeRect(wx, wy, ship.worldW, ship.worldH); ctx.restore();
+
+    // minimap draw
+    drawMini(camX, camY);
+  }
+
+  // ---------- Mini map ----------
+  function drawMini(camX, camY){
+    const W = MINI.width, H = MINI.height; mctx.clearRect(0,0,W,H); mctx.fillStyle = '#011'; mctx.fillRect(0,0,W,H);
+    const scaleX = W/ship.worldW, scaleY = H/ship.worldH; mctx.fillStyle = '#fff3'; for (let it of items){ if (!it.collected) mctx.fillRect(Math.round(it.x*scaleX)-2, Math.round(it.y*scaleY)-2,4,4); }
+    mctx.fillStyle = '#f8b'; for (let d of debrisList){ mctx.fillRect(Math.round(d.x*scaleX)-1, Math.round(d.y*scaleY)-1,2,2); }
+    mctx.fillStyle = '#3af'; mctx.beginPath(); mctx.arc(ship.x*scaleX, ship.y*scaleY, 3,0,Math.PI*2); mctx.fill(); mctx.fillStyle = '#ffd'; mctx.fillRect(station.x*scaleX-3, station.y*scaleY-3,6,6);
+    // view rect
+    mctx.strokeStyle = 'rgba(255,255,255,0.12)'; mctx.strokeRect(camX*scaleX, camY*scaleY, canvas.width*scaleX, canvas.height*scaleY);
+  }
+
+  // ---------- Loop ----------
+  function loop(now){
+    const dt = Math.min(0.05, (now - lastTime)/1000); lastTime = now; if (running && !paused) update(dt, now/1000); draw(); requestAnimationFrame(loop);
+  }
+
+  // ---------- Controls & input ----------
+  const keys = {}; addEventListener('keydown', e=>{ keys[e.code]=true; if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault(); }); addEventListener('keyup', e=>{ keys[e.code]=false; });
+  document.getElementById('btnPause').addEventListener('click', ()=>{ paused = !paused; document.getElementById('btnPause').textContent = paused ? 'Resume' : 'Pause'; if (paused) showOverlay('<div class="big">Paused</div><div class="sub">Press Resume to continue</div>'); else hideOverlay(); });
+  document.getElementById('btnRestart').addEventListener('click', ()=>{ initLevel(currentLevelIndex); });
+
+  // ---------- Overlays & messages ----------
+  function showOverlay(html){ OVERLAY.innerHTML = ''; const panel = document.createElement('div'); panel.className='panel'; panel.style.pointerEvents='auto'; panel.innerHTML = html; OVERLAY.appendChild(panel); OVERLAY.style.display='flex'; }
+  function hideOverlay(){ OVERLAY.innerHTML=''; OVERLAY.style.display='none'; }
+  function showMainMenu(){ showOverlay(`<div style="text-align:center"><div class="big">Space Drift</div><div class="sub">Choose a mission</div><div style="margin-top:12px">${LEVELS.map((l,i)=>`<button class="btn" data-i="${i}" style="margin:6px">${i+1}. ${l.name}</button>`).join('')}</div></div>`);
+    [...OVERLAY.querySelectorAll('button.btn')].forEach(b=>b.addEventListener('click', e=>{ const i = Number(e.currentTarget.dataset.i); hideOverlay(); initLevel(i); })); }
+
+  // small top-center transient messages
+  const MSG = document.createElement('div'); MSG.style.position='fixed'; MSG.style.left='50%'; MSG.style.top='12px'; MSG.style.transform='translateX(-50%)'; MSG.style.background='rgba(0,0,0,0.45)'; MSG.style.color='white'; MSG.style.padding='8px 12px'; MSG.style.borderRadius='8px'; MSG.style.fontFamily='system-ui,Arial'; MSG.style.display='none'; MSG.style.zIndex='80'; document.body.appendChild(MSG);
+  let msgTO = null;
+  function showMsg(txt, ms=1200){ MSG.style.display='block'; MSG.textContent = txt; if (msgTO) clearTimeout(msgTO); if (ms>0) msgTO = setTimeout(()=>{ MSG.style.display='none'; }, ms); }
+
+  // ---------- Utilities ----------
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+  // ---------- Start & main menu ----------
+  loadAll().then(ld=>{ assets = ld; showMainMenu(); lastTime = performance.now(); requestAnimationFrame(loop); });
+
+})();
+</script>
+</body>
+</html>
