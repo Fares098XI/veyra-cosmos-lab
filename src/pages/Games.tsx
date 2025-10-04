@@ -1,22 +1,27 @@
 import { Gamepad2, Camera, Waves } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Games() {
   const games = [
     {
+      id: "game1",
       icon: Camera,
-      title: "Cupola Photo Challenge",
-      description: "Identify Earth features from ISS photographs - Coming Soon",
+      title: "Cupola View Challenge",
+      description:
+        "Identify Earth features from ISS photographs after passing some challenges - Active.\n\n📖 Instructions: Add detailed rules or tips for this game here so players know how to play.",
       color: "from-primary to-cyan-500",
       difficulty: "Easy",
-      players: "Coming Soon",
+      players: "Running",
     },
     {
+      id: "game2",
       icon: Waves,
       title: "NBL Balance Master",
-      description: "Master neutral buoyancy in timed challenges - Coming Soon",
+      description:
+        "Master neutral buoyancy in timed challenges by helping the spacecraft reach its destination - Active.\n\n📖 Instructions: Add details on controls, scoring, or what users must achieve in this game.",
       color: "from-accent to-purple-500",
       difficulty: "Medium",
-      players: "Coming Soon",
+      players: "Running",
     },
   ];
 
@@ -67,16 +72,25 @@ export default function Games() {
                     >
                       {game.difficulty}
                     </span>
-                    <span className="text-sm text-muted-foreground">{game.players}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {game.players}
+                    </span>
                   </div>
                 </div>
 
-                <h3 className="font-display text-2xl font-bold mb-3">{game.title}</h3>
-                <p className="text-muted-foreground mb-6">{game.description}</p>
+                <h3 className="font-display text-2xl font-bold mb-3">
+                  {game.title}
+                </h3>
 
-                <button className="w-full py-3 rounded-lg bg-primary hover:bg-primary/90 font-medium transition-colors">
-                  Launch Game
-                </button>
+                <p className="text-muted-foreground whitespace-pre-line mb-6">
+                  {game.description}
+                </p>
+
+                <Link to={`/${game.id}`}>
+                  <button className="w-full py-3 rounded-lg bg-primary hover:bg-primary/90 font-medium transition-colors">
+                    Launch Game
+                  </button>
+                </Link>
               </div>
             );
           })}
