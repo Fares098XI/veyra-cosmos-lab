@@ -189,27 +189,18 @@ export default function Lesson3() {
             </Button>
           ) : (
             <div className="space-y-4">
-              <div className={`p-6 rounded-lg ${score === 100 ? "bg-green-500/20" : "bg-orange-500/20"}`}>
+              <div className="p-6 rounded-lg bg-green-500/20">
                 <div className="flex items-center gap-3 mb-2">
-                  {score === 100 ? <CheckCircle className="w-6 h-6 text-green-400" /> : <XCircle className="w-6 h-6 text-orange-400" />}
-                  <h3 className="font-display text-2xl font-bold">Your Score: {score.toFixed(0)}%</h3>
+                  <CheckCircle className="w-6 h-6 text-green-400" />
+                  <h3 className="font-display text-2xl font-bold">Your Score: 100%</h3>
                 </div>
-                {score === 100 ? (
-                  <p className="text-green-400 font-semibold">🎉 Good job! You've mastered this lesson!</p>
-                ) : (
-                  <p className="text-orange-400">Try again to achieve 100% and unlock additional resources!</p>
-                )}
+                <p className="text-green-400 font-semibold">🎉 Perfect! Remember, your answers don't matter as long as you're learning and improving!</p>
               </div>
-              {score < 100 && (
-                <Button onClick={resetQuiz} variant="outline" className="w-full">
-                  Try Again
-                </Button>
-              )}
             </div>
           )}
         </div>
 
-        {showResults && score === 100 && (
+        {showResults && (
           <div className="glass-panel p-8 space-y-4 animate-fade-in">
             <h2 className="font-display text-3xl font-bold">📚 Additional Resources</h2>
             <ul className="space-y-3">

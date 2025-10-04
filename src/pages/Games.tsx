@@ -74,8 +74,8 @@ export default function Games() {
                 <h3 className="font-display text-2xl font-bold mb-3">{game.title}</h3>
                 <p className="text-muted-foreground mb-6">{game.description}</p>
 
-                <button className="w-full py-3 rounded-lg bg-card/40 border border-border/50 font-medium cursor-not-allowed opacity-50">
-                  Coming Soon
+                <button className="w-full py-3 rounded-lg bg-primary hover:bg-primary/90 font-medium transition-colors">
+                  Launch Game
                 </button>
               </div>
             );
