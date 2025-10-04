@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Waves, Info, Play, Award, Droplet, Gauge, Wind, BookOpen } from "lucide-react";
 import nblTraining from "@/assets/nbl-training.jpg";
 import { Slider } from "@/components/ui/slider";
-
 import { Button } from "@/components/ui/button";
 
 export default function NBL() {
@@ -328,6 +327,7 @@ export default function NBL() {
                   </span>
                 </button>
 
+                {/* Existing VR alert kept — added an Enter VR button that opens /vr2 */}
                 <button
                   onClick={() => window.alert("VR Experience launching soon! This will connect to a WebXR-enabled NBL simulation.")}
                   className="w-full py-4 rounded-xl font-display font-bold bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:via-indigo-700 hover:to-blue-700 transition-all shadow-lg shadow-purple-500/30 text-white group"
@@ -338,6 +338,14 @@ export default function NBL() {
                     </svg>
                     🥽 Launch VR NBL Experience
                   </span>
+                </button>
+
+                {/* NEW: Enter VR2 (opens the static build at /vr2) */}
+                <button
+                  onClick={() => (window.location.href = "/vr2")}
+                  className="w-full py-3 rounded-lg border border-border bg-card text-sm font-medium hover:bg-card/80"
+                >
+                  Enter VR (NBL) →
                 </button>
               </div>
 
