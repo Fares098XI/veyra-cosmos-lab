@@ -1,8 +1,6 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import ChatWidget from "./ChatWidget";
 import veyraLogo from "@/assets/veyra-logo.png";
 import ThemeToggle from "./ThemeToggle";
 
@@ -226,8 +224,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Main content */}
       <main className="relative z-10">{children}</main>
-
-      <ChatWidget />
 
       {/* Footer */}
       <footer className="relative z-10 mt-20 border-t border-border/30 py-8">
