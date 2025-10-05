@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { MessageCircle, X } from "lucide-react";
 
@@ -6,6 +7,12 @@ export default function ChatWidget() {
 
   useEffect(() => {
     if (isOpen) {
+      // Remove any existing chatbase elements first
+      const existingFrame = document.getElementById("chatbase-bubble-button");
+      const existingWindow = document.getElementById("chatbase-bubble-window");
+      if (existingFrame) existingFrame.remove();
+      if (existingWindow) existingWindow.remove();
+
       const script = document.createElement("script");
       script.innerHTML = `
         window.embeddedChatbotConfig = {
@@ -17,8 +24,19 @@ export default function ChatWidget() {
 
       const chatbaseScript = document.createElement("script");
       chatbaseScript.src = "https://www.chatbase.co/embed.min.js";
+      chatbaseScript.setAttribute("chatbotId", "6kkqrmN2ON0cEH7n1_OJb");
+      chatbaseScript.setAttribute("domain", "www.chatbase.co");
       chatbaseScript.defer = true;
       document.body.appendChild(chatbaseScript);
+
+      // Force show the chatbase window after a short delay
+      setTimeout(() => {
+        const chatWindow = document.getElementById("chatbase-bubble-window");
+        if (chatWindow) {
+          chatWindow.style.display = "block";
+          chatWindow.style.visibility = "visible";
+        }
+      }, 500);
 
       return () => {
         document.body.removeChild(script);
