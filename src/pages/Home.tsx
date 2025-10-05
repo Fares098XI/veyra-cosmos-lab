@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { Globe, Waves, Gamepad2, Map, BookOpen, Rocket, Sparkles } from "lucide-react";
 import earthFromISS from "@/assets/earth-from-iss.jpg";
+import veyraLogo from "@/assets/veyra-logo.png";
 
 export default function Home() {
   const features = [
@@ -69,12 +70,12 @@ export default function Home() {
         </div>
 
         {/* Dynamic gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-destructive/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-destructive/10 dark:from-background dark:via-primary/5 dark:to-destructive/10 light:from-background light:via-primary/3 light:to-destructive/5" />
         
         {/* Animated orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[200px] animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-destructive/15 rounded-full blur-[180px] animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[150px] animate-float" style={{ animationDelay: '4s' }} />
+        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/10 dark:bg-primary/10 light:bg-primary/5 rounded-full blur-[200px] animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-destructive/15 dark:bg-destructive/15 light:bg-destructive/8 rounded-full blur-[180px] animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-accent/10 dark:bg-accent/10 light:bg-accent/5 rounded-full blur-[150px] animate-float" style={{ animationDelay: '4s' }} />
         
         {/* Earth backdrop - larger and more prominent */}
         <div className="absolute inset-0 flex items-center justify-end pr-0 pointer-events-none opacity-25">
@@ -109,7 +110,7 @@ export default function Home() {
               </h1>
               
               <div className="space-y-2">
-                <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-extrabold text-white/90 leading-tight">
+                <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-extrabold text-white dark:text-white light:text-foreground leading-tight">
                   Journey Beyond Earth
                 </h2>
                 <div className="flex items-center justify-center lg:justify-start gap-3">
@@ -121,7 +122,7 @@ export default function Home() {
             </div>
 
             {/* Description */}
-            <p className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <p className="text-lg md:text-xl text-white/70 dark:text-white/70 light:text-foreground/70 max-w-xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
               Experience the International Space Station through immersive VR. From breathtaking Cupola views to realistic NBL training — discover how astronauts see and protect our planet.
             </p>
 
@@ -151,66 +152,72 @@ export default function Home() {
           {/* Right Column - Orbital Visualization */}
           <div className="hidden lg:flex items-center justify-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <div className="relative w-[400px] h-[400px]">
-              {/* Central Core - ISS Representation */}
+              {/* Central Core - Veyra Logo */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary via-accent to-destructive flex items-center justify-center shadow-2xl animate-float backdrop-blur-xl border-2 border-white/20">
-                  <Rocket className="w-10 h-10 text-white animate-pulse" />
+                <div className="relative w-28 h-28 rounded-full bg-gradient-to-br from-primary via-accent to-destructive p-1 animate-float shadow-2xl">
+                  <div className="w-full h-full rounded-full bg-background/95 dark:bg-background/95 light:bg-card backdrop-blur-xl flex items-center justify-center overflow-hidden border-2 border-white/20 dark:border-white/20 light:border-primary/30">
+                    <img 
+                      src={veyraLogo} 
+                      alt="Veyra Logo" 
+                      className="w-20 h-20 object-contain animate-pulse"
+                    />
+                  </div>
                 </div>
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-accent to-destructive blur-xl opacity-50 animate-glow-pulse" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-accent to-destructive blur-2xl opacity-60 dark:opacity-60 light:opacity-40 animate-glow-pulse" />
+                <div className="absolute inset-0 rounded-full bg-primary blur-3xl opacity-30 dark:opacity-30 light:opacity-20 animate-ping" style={{ animationDuration: '3s' }} />
               </div>
 
-              {/* Orbital Ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-primary/20 border-dashed animate-spin-slow" />
-              <div className="absolute inset-8 rounded-full border border-accent/10 border-dashed animate-spin-slow" style={{ animationDuration: '30s', animationDirection: 'reverse' }} />
+              {/* Orbital Rings - Multiple layers with varied speeds */}
+              <div className="absolute inset-0 rounded-full border-2 border-primary/30 border-dashed animate-spin-slow" style={{ animationDuration: '20s' }} />
+              <div className="absolute inset-8 rounded-full border border-accent/20 border-dashed animate-spin-slow" style={{ animationDuration: '28s', animationDirection: 'reverse' }} />
+              <div className="absolute inset-4 rounded-full border border-destructive/15 animate-spin-slow" style={{ animationDuration: '35s' }} />
+              <div className="absolute inset-12 rounded-full border border-cyan-500/10 border-dotted animate-spin-slow" style={{ animationDuration: '40s', animationDirection: 'reverse' }} />
 
-              {/* Orbiting Icons */}
+              {/* Orbiting Mission Module Icons - Uniform & Harmonious */}
               {[
-                { icon: Globe, color: 'from-primary to-cyan-500', delay: '0s', size: 'w-16 h-16' },
-                { icon: Waves, color: 'from-accent to-purple-500', delay: '0.25s', size: 'w-14 h-14' },
-                { icon: Gamepad2, color: 'from-destructive to-orange-500', delay: '0.5s', size: 'w-16 h-16' },
-                { icon: Map, color: 'from-cyan-500 to-primary', delay: '0.75s', size: 'w-14 h-14' },
-                { icon: BookOpen, color: 'from-purple-500 to-accent', delay: '1s', size: 'w-12 h-12' },
-                { icon: Sparkles, color: 'from-primary to-accent', delay: '1.25s', size: 'w-12 h-12' },
+                { icon: Globe, color: 'from-primary to-cyan-500' },
+                { icon: Waves, color: 'from-accent to-purple-500' },
+                { icon: Gamepad2, color: 'from-destructive to-orange-500' },
+                { icon: Map, color: 'from-cyan-500 to-primary' },
+                { icon: BookOpen, color: 'from-purple-500 to-accent' },
+                { icon: Rocket, color: 'from-primary to-accent' },
               ].map((item, index) => {
                 const Icon = item.icon;
-                const angle = (index * 60) * (Math.PI / 180);
-                const radius = 160;
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
                 
                 return (
                   <div
                     key={index}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                     style={{
-                      animation: `orbit-${index} 20s linear infinite`,
-                      animationDelay: item.delay,
+                      animation: `orbit-${index} 24s linear infinite`,
                     }}
                   >
                     <div
-                      className={`${item.size} rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20 hover:scale-110 transition-transform`}
-                      style={{
-                        transform: `translate(${x}px, ${y}px)`,
-                      }}
+                      className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-2xl backdrop-blur-sm border-2 border-white/30 hover:scale-125 hover:rotate-12 transition-all duration-500 relative group cursor-pointer`}
                     >
-                      <Icon className="w-8 h-8 text-white" />
+                      <Icon className="w-8 h-8 text-white relative z-10 drop-shadow-2xl" />
+                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${item.color} blur-xl opacity-0 group-hover:opacity-80 transition-opacity duration-500`} />
+                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${item.color} blur-2xl opacity-40`} style={{ animation: 'glow-pulse 3s ease-in-out infinite', animationDelay: `${index * 0.5}s` }} />
                     </div>
                   </div>
                 );
               })}
 
-              {/* Glowing particles */}
-              {[...Array(8)].map((_, i) => (
+              {/* Enhanced Glowing particles */}
+              {[...Array(16)].map((_, i) => (
                 <div
                   key={`particle-${i}`}
-                  className="absolute w-1 h-1 bg-primary rounded-full animate-float"
+                  className="absolute rounded-full animate-float"
                   style={{
+                    width: `${2 + Math.random() * 3}px`,
+                    height: `${2 + Math.random() * 3}px`,
+                    background: i % 3 === 0 ? 'hsl(var(--primary))' : i % 3 === 1 ? 'hsl(var(--accent))' : 'hsl(var(--destructive))',
                     top: `${Math.random() * 100}%`,
                     left: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 3}s`,
-                    animationDuration: `${2 + Math.random() * 2}s`,
-                    opacity: 0.6,
-                    boxShadow: '0 0 10px hsl(var(--primary))',
+                    animationDelay: `${Math.random() * 4}s`,
+                    animationDuration: `${3 + Math.random() * 3}s`,
+                    opacity: 0.4 + Math.random() * 0.4,
+                    boxShadow: `0 0 ${10 + Math.random() * 10}px currentColor`,
                   }}
                 />
               ))}
@@ -219,7 +226,7 @@ export default function Home() {
         </div>
 
         {/* Bottom glow */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[300px] opacity-30 pointer-events-none">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[300px] opacity-30 dark:opacity-30 light:opacity-15 pointer-events-none">
           <div className="w-full h-full bg-gradient-to-t from-primary/30 via-accent/20 to-transparent blur-3xl" />
         </div>
       </section>
@@ -230,10 +237,10 @@ export default function Home() {
           {/* Section Header */}
           <div className="text-center mb-20 space-y-4">
             <h2 className="font-display text-5xl md:text-7xl font-black tracking-tight">
-              <span className="text-white">Mission </span>
+              <span className="text-white dark:text-white light:text-foreground">Mission </span>
               <span className="bg-gradient-to-r from-primary via-destructive to-primary bg-clip-text text-transparent">Modules</span>
             </h2>
-            <p className="text-xl text-white/60 max-w-2xl mx-auto">
+            <p className="text-xl text-white/60 dark:text-white/60 light:text-foreground/60 max-w-2xl mx-auto">
               Six immersive experiences designed to bring you closer to space exploration
             </p>
           </div>
@@ -262,10 +269,10 @@ export default function Home() {
                     </div>
 
                     {/* Content */}
-                    <h3 className="font-display text-2xl font-bold mb-3 text-white group-hover:text-primary transition-colors">
+                    <h3 className="font-display text-2xl font-bold mb-3 text-white dark:text-white light:text-foreground group-hover:text-primary transition-colors">
                       {feature.title}
                     </h3>
-                    <p className="text-white/60 mb-6 leading-relaxed">
+                    <p className="text-white/60 dark:text-white/60 light:text-foreground/70 mb-6 leading-relaxed">
                       {feature.description}
                     </p>
 
@@ -286,9 +293,9 @@ export default function Home() {
       <section className="relative py-32 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Background glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-destructive/5 via-primary/5 to-destructive/5 rounded-[4rem] blur-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-r from-destructive/5 via-primary/5 to-destructive/5 dark:from-destructive/5 dark:via-primary/5 dark:to-destructive/5 light:from-destructive/3 light:via-primary/3 light:to-destructive/3 rounded-[4rem] blur-3xl" />
           
-          <div className="relative bg-black/60 backdrop-blur-xl border border-white/10 rounded-[3rem] p-16">
+          <div className="relative bg-black/60 dark:bg-black/60 light:bg-card/80 backdrop-blur-xl border border-white/10 dark:border-white/10 light:border-border/40 rounded-[3rem] p-16">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
               {[
                 { value: "408", label: "KM ABOVE EARTH", suffix: "" },
@@ -301,9 +308,9 @@ export default function Home() {
                     <span className="bg-gradient-to-r from-white via-primary to-destructive bg-clip-text text-transparent">
                       {stat.value}
                     </span>
-                    {stat.suffix && <span className="text-2xl text-white/40 ml-2">{stat.suffix}</span>}
+                    {stat.suffix && <span className="text-2xl text-white/40 dark:text-white/40 light:text-foreground/40 ml-2">{stat.suffix}</span>}
                   </div>
-                  <div className="text-sm md:text-base text-white/50 font-semibold tracking-wider">
+                  <div className="text-sm md:text-base text-white/50 dark:text-white/50 light:text-foreground/60 font-semibold tracking-wider">
                     {stat.label}
                   </div>
                 </div>
