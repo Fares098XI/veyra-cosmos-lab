@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -145,8 +146,8 @@ export default {
         "scale-in": "scale-in 0.6s ease-out",
       },
       fontFamily: {
-        sans: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['Orbitron', 'Montserrat', 'system-ui', 'sans-serif'],
+        sans: ['Rajdhani', 'system-ui', 'sans-serif'],
+        display: ['Exo 2', 'system-ui', 'sans-serif'],
       },
     },
   },
