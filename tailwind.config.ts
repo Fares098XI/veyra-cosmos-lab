@@ -105,6 +105,22 @@ export default {
             opacity: "0",
           },
         },
+        "meteor-pro": {
+          "0%": {
+            transform: "translateY(-20vh) translateX(-10vw) rotate(-42deg) scale(1)",
+            opacity: "0",
+          },
+          "5%": {
+            opacity: "1",
+          },
+          "85%": {
+            opacity: "0.9",
+          },
+          "100%": {
+            transform: "translateY(120vh) translateX(15vw) rotate(-42deg) scale(0.8)",
+            opacity: "0",
+          },
+        },
         "scale-in": {
           "0%": {
             transform: "scale(0.8)",
@@ -125,11 +141,12 @@ export default {
         "slide-in-right": "slide-in-right 0.4s ease-out",
         "spin-slow": "spin-slow 20s linear infinite",
         "meteor": "meteor 3s linear infinite",
+        "meteor-pro": "meteor-pro 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite",
         "scale-in": "scale-in 0.6s ease-out",
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Montserrat', 'system-ui', 'sans-serif'],
+        sans: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Orbitron', 'Montserrat', 'system-ui', 'sans-serif'],
       },
     },
   },

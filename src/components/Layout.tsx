@@ -47,31 +47,80 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           ))}
         </div>
         
-        {/* Meteors/Shooting stars */}
-        <div className="absolute inset-0">
-          {[...Array(12)].map((_, i) => {
-            const colors = [
-              { core: 'rgba(255,255,255,0.95)', trail: 'rgba(255,255,255,0)', glow: 'rgba(255,255,255,0.9)' },
-              { core: 'rgba(100,200,255,0.95)', trail: 'rgba(100,200,255,0)', glow: 'rgba(100,200,255,0.8)' },
-              { core: 'rgba(255,80,120,0.95)', trail: 'rgba(255,80,120,0)', glow: 'rgba(255,80,120,0.7)' },
+        {/* Professional Meteor System */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(15)].map((_, i) => {
+            const meteorTypes = [
+              { 
+                color1: '#ffffff', color2: '#e0f2ff', color3: 'rgba(255,255,255,0)',
+                glow: 'rgba(255,255,255,0.8)', size: 'large', speed: 'fast'
+              },
+              { 
+                color1: '#60a5fa', color2: '#3b82f6', color3: 'rgba(59,130,246,0)',
+                glow: 'rgba(96,165,250,0.9)', size: 'medium', speed: 'medium'
+              },
+              { 
+                color1: '#ef4444', color2: '#dc2626', color3: 'rgba(239,68,68,0)',
+                glow: 'rgba(239,68,68,0.8)', size: 'small', speed: 'slow'
+              },
             ];
-            const color = colors[i % 3];
+            const type = meteorTypes[i % 3];
+            const sizeMap = { small: 2, medium: 3, large: 4 };
+            const width = sizeMap[type.size as keyof typeof sizeMap];
+            const length = type.size === 'large' ? 180 : type.size === 'medium' ? 140 : 100;
+            const speedMap = { fast: 2.5, medium: 3.5, slow: 4.5 };
+            const duration = speedMap[type.speed as keyof typeof speedMap];
+            
             return (
-              <div key={`meteor-${i}`} className="absolute animate-meteor" style={{
-                top: `${Math.random() * -20}%`,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 8}s`,
-                animationDuration: `${Math.random() * 2.5 + 1.5}s`,
-              }}>
-                <div className="relative w-[3px] h-[100px]" style={{
-                  background: `linear-gradient(to bottom, ${color.core}, ${color.trail})`,
-                  boxShadow: `0 0 12px ${color.glow}, 0 0 24px ${color.glow}`,
-                  borderRadius: '50% 50% 0 0',
-                }}>
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[5px] h-[5px] rounded-full" style={{
-                    background: color.core,
-                    boxShadow: `0 0 8px ${color.glow}`,
-                  }}/>
+              <div 
+                key={`meteor-${i}`} 
+                className="absolute animate-meteor-pro"
+                style={{
+                  top: `${Math.random() * -30}%`,
+                  left: `${5 + Math.random() * 90}%`,
+                  animationDelay: `${Math.random() * 10}s`,
+                  animationDuration: `${duration + Math.random() * 1.5}s`,
+                  transform: `rotate(${-35 + Math.random() * 10}deg)`,
+                }}
+              >
+                <div 
+                  className="relative"
+                  style={{
+                    width: `${width}px`,
+                    height: `${length}px`,
+                    background: `linear-gradient(to bottom, ${type.color1} 0%, ${type.color2} 15%, ${type.color3} 100%)`,
+                    boxShadow: `
+                      0 0 ${width * 4}px ${type.glow},
+                      0 0 ${width * 8}px ${type.glow},
+                      0 0 ${width * 12}px ${type.glow}
+                    `,
+                    borderRadius: '50% 50% 0 0',
+                    filter: 'blur(0.5px)',
+                  }}
+                >
+                  <div 
+                    className="absolute top-0 left-1/2 -translate-x-1/2 rounded-full animate-pulse"
+                    style={{
+                      width: `${width * 2.5}px`,
+                      height: `${width * 2.5}px`,
+                      background: `radial-gradient(circle, ${type.color1} 0%, ${type.color2} 40%, transparent 70%)`,
+                      boxShadow: `0 0 ${width * 6}px ${type.glow}`,
+                    }}
+                  />
+                  {[...Array(5)].map((_, j) => (
+                    <div
+                      key={`particle-${j}`}
+                      className="absolute left-1/2 -translate-x-1/2 rounded-full"
+                      style={{
+                        width: `${width * 0.6}px`,
+                        height: `${width * 0.6}px`,
+                        top: `${20 + j * 15}%`,
+                        background: type.color2,
+                        opacity: 1 - (j * 0.15),
+                        boxShadow: `0 0 ${width * 2}px ${type.glow}`,
+                      }}
+                    />
+                  ))}
                 </div>
               </div>
             );
@@ -87,21 +136,28 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <nav className="relative z-50 glass-panel mx-4 mt-4 lg:mx-8">
         <div className="flex items-center justify-between p-4 lg:px-8">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center neon-glow">
-              <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                <path d="M12 4v16M4 12h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                <circle cx="12" cy="8" r="1.5" fill="currentColor"/>
-                <circle cx="16" cy="12" r="1.5" fill="currentColor"/>
-                <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
-                <circle cx="8" cy="12" r="1.5" fill="currentColor"/>
-                <path d="M15 9l3-3M9 15l-3 3M15 15l3 3M9 9L6 6" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.6"/>
-              </svg>
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="relative">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary via-accent to-destructive flex items-center justify-center shadow-2xl transform transition-transform group-hover:scale-110 group-hover:rotate-3">
+                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" fill="none" opacity="0.3"/>
+                  <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                  <path d="M12 2v20M2 12h20" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.4"/>
+                  <circle cx="12" cy="6" r="2" fill="currentColor"/>
+                  <circle cx="18" cy="12" r="2" fill="currentColor"/>
+                  <circle cx="12" cy="18" r="2" fill="currentColor"/>
+                  <circle cx="6" cy="12" r="2" fill="currentColor"/>
+                  <path d="M16 8l4-4M8 16l-4 4M16 16l4 4M8 8L4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
+                  <circle cx="12" cy="12" r="1.5" fill="currentColor" className="animate-pulse"/>
+                </svg>
+              </div>
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary to-destructive blur-xl opacity-0 group-hover:opacity-60 transition-opacity" />
             </div>
             <div>
-              <div className="font-display text-xl font-bold gradient-text">Veyra</div>
-              <div className="text-xs text-muted-foreground">by AstroVista</div>
+              <div className="font-display text-2xl font-extrabold bg-gradient-to-r from-white via-primary to-accent bg-clip-text text-transparent">
+                VEYRA
+              </div>
+              <div className="text-xs font-medium text-muted-foreground tracking-wider">Space Exploration Hub</div>
             </div>
           </Link>
 

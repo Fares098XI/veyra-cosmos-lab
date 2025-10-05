@@ -52,73 +52,82 @@ export default function Home() {
     <div className="relative">
       {/* Epic Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+        {/* Animated gradient orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[150px] animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-destructive/20 rounded-full blur-[120px] animate-float" style={{ animationDelay: '1s' }} />
+        
         {/* Hero Content */}
-        <div className="relative z-20 max-w-7xl mx-auto text-center space-y-12 py-20 animate-fade-in">
+        <div className="relative z-20 max-w-7xl mx-auto text-center space-y-16 py-20">
           {/* Badge */}
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-destructive/30 bg-black/40 backdrop-blur-sm animate-scale-in" style={{ animationDelay: '0.2s' }}>
-            <Sparkles className="w-5 h-5 text-destructive" />
-            <span className="text-sm font-semibold tracking-wide text-destructive">NASA SPACE APPS CHALLENGE 2025</span>
+          <div className="inline-flex items-center gap-3 px-8 py-4 rounded-full border-2 border-destructive/40 bg-black/60 backdrop-blur-xl shadow-2xl hover:border-destructive/60 transition-all hover:scale-105" style={{ animationDelay: '0.2s' }}>
+            <Sparkles className="w-6 h-6 text-destructive animate-pulse" />
+            <span className="text-base font-bold tracking-widest text-destructive uppercase">NASA Space Apps Challenge 2025</span>
           </div>
 
-          {/* Main Title */}
-          <div className="space-y-6 animate-scale-in" style={{ animationDelay: '0.4s' }}>
-            <h1 className="font-display text-7xl md:text-9xl lg:text-[12rem] font-black tracking-tighter">
-              <span className="inline-block bg-gradient-to-r from-white via-primary to-destructive bg-clip-text text-transparent">
+          {/* Main Title with enhanced styling */}
+          <div className="space-y-8" style={{ animationDelay: '0.4s' }}>
+            <h1 className="font-display text-8xl md:text-[10rem] lg:text-[14rem] font-black tracking-tighter leading-none">
+              <span className="inline-block bg-gradient-to-r from-white via-primary via-accent to-destructive bg-clip-text text-transparent animate-scale-in drop-shadow-2xl">
                 VEYRA
               </span>
             </h1>
-            <div className="h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-destructive to-transparent" />
+            <div className="flex items-center justify-center gap-4">
+              <div className="h-1 w-24 bg-gradient-to-r from-transparent via-primary to-primary rounded-full" />
+              <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+              <div className="h-1 w-24 bg-gradient-to-r from-destructive to-transparent rounded-full" />
+            </div>
           </div>
 
-          {/* Subtitle */}
-          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-white/90 tracking-tight max-w-5xl mx-auto leading-tight animate-scale-in" style={{ animationDelay: '0.6s' }}>
+          {/* Subtitle with better hierarchy */}
+          <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight max-w-6xl mx-auto leading-tight" style={{ animationDelay: '0.6s' }}>
             Journey Beyond Earth
             <br />
-            <span className="text-primary">Experience the ISS</span>
+            <span className="bg-gradient-to-r from-primary via-cyan-400 to-accent bg-clip-text text-transparent">
+              Experience the ISS
+            </span>
           </h2>
 
           {/* Description */}
-          <p className="text-lg md:text-2xl text-white/70 max-w-3xl mx-auto leading-relaxed animate-scale-in" style={{ animationDelay: '0.8s' }}>
+          <p className="text-xl md:text-3xl text-white/80 max-w-4xl mx-auto leading-relaxed font-light" style={{ animationDelay: '0.8s' }}>
             Step into the International Space Station through immersive VR experiences.
-            From the breathtaking Cupola views to weightless NBL training —
+            From breathtaking Cupola views to weightless NBL training —
             discover how astronauts see and help our planet.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8 animate-scale-in" style={{ animationDelay: '1s' }}>
+          {/* CTA Buttons with enhanced design */}
+          <div className="flex flex-col sm:flex-row gap-8 justify-center pt-12" style={{ animationDelay: '1s' }}>
             <Link
               to="/mission"
-              className="group relative px-12 py-5 rounded-2xl bg-destructive font-display font-bold text-xl text-white overflow-hidden transition-all hover:scale-105"
+              className="group relative px-14 py-6 rounded-2xl bg-gradient-to-r from-destructive via-red-600 to-destructive font-display font-black text-2xl text-white overflow-hidden transition-all hover:scale-110 hover:shadow-[0_0_80px_rgba(252,61,33,0.8)] shadow-[0_0_40px_rgba(252,61,33,0.5)]"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-destructive to-red-600 transition-transform group-hover:scale-110" />
-              <span className="relative flex items-center gap-3">
-                <Rocket className="w-6 h-6" />
+              <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-destructive transition-transform group-hover:scale-110" />
+              <span className="relative flex items-center justify-center gap-4">
+                <Rocket className="w-7 h-7 group-hover:translate-y-[-4px] transition-transform" />
                 Launch Mission
               </span>
-              <div className="absolute inset-0 shadow-[0_0_40px_rgba(252,61,33,0.6)] group-hover:shadow-[0_0_60px_rgba(252,61,33,0.8)] transition-all" />
             </Link>
             <Link
               to="/cupola"
-              className="group px-12 py-5 rounded-2xl border-2 border-primary/50 bg-black/40 backdrop-blur-sm font-display font-bold text-xl text-white hover:bg-primary/10 hover:border-primary transition-all hover:scale-105"
+              className="group relative px-14 py-6 rounded-2xl border-3 border-primary/60 bg-black/50 backdrop-blur-xl font-display font-black text-2xl text-white hover:bg-primary/20 hover:border-primary hover:shadow-[0_0_60px_rgba(59,130,246,0.6)] transition-all hover:scale-110 shadow-xl"
             >
-              <span className="flex items-center gap-3">
-                <Globe className="w-6 h-6 text-primary" />
+              <span className="relative flex items-center justify-center gap-4">
+                <Globe className="w-7 h-7 text-primary group-hover:rotate-12 transition-transform" />
                 Enter Cupola
               </span>
             </Link>
           </div>
 
           {/* Scroll Indicator */}
-          <div className="pt-20 animate-bounce">
-            <div className="w-6 h-10 border-2 border-white/30 rounded-full mx-auto relative">
-              <div className="w-1.5 h-3 bg-white/50 rounded-full absolute top-2 left-1/2 -translate-x-1/2 animate-pulse" />
+          <div className="pt-24 animate-bounce">
+            <div className="w-7 h-12 border-3 border-white/40 rounded-full mx-auto relative hover:border-primary transition-colors">
+              <div className="w-2 h-4 bg-gradient-to-b from-white to-primary rounded-full absolute top-3 left-1/2 -translate-x-1/2 animate-pulse" />
             </div>
           </div>
         </div>
 
-        {/* Floating ISS silhouette or station graphic */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] opacity-10 pointer-events-none">
-          <div className="w-full h-full bg-gradient-to-t from-primary/30 to-transparent blur-3xl" />
+        {/* Enhanced floating glow */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-20 pointer-events-none">
+          <div className="w-full h-full bg-gradient-to-t from-primary/40 via-accent/30 to-transparent blur-3xl" />
         </div>
       </section>
 

@@ -76,8 +76,9 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
     min-height: 100vh;
+    font-weight: 400;
   }
 
   body:not(.light) {
@@ -89,8 +90,9 @@ All colors MUST be HSL.
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', system-ui, sans-serif;
+    font-family: 'Orbitron', 'Montserrat', system-ui, sans-serif;
     font-weight: 700;
+    letter-spacing: -0.02em;
   }
 }
 
