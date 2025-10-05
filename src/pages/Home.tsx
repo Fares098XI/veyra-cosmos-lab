@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Globe, Waves, Gamepad2, Map, BookOpen, Rocket, Sparkles } from "lucide-react";
 import earthFromISS from "@/assets/earth-from-iss.jpg";
@@ -50,84 +51,176 @@ export default function Home() {
 
   return (
     <div className="relative">
-      {/* Epic Hero Section */}
+      {/* Epic Hero Section - Redesigned */}
       <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
-        {/* Animated gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[150px] animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-destructive/20 rounded-full blur-[120px] animate-float" style={{ animationDelay: '1s' }} />
-        
-        {/* Hero Content */}
-        <div className="relative z-20 max-w-7xl mx-auto text-center space-y-16 py-20">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-3 px-8 py-4 rounded-full border-2 border-destructive/40 bg-black/60 backdrop-blur-xl shadow-2xl hover:border-destructive/60 transition-all hover:scale-105" style={{ animationDelay: '0.2s' }}>
-            <Sparkles className="w-6 h-6 text-destructive animate-pulse" />
-            <span className="text-base font-bold tracking-widest text-destructive uppercase">NASA Space Apps Challenge 2025</span>
-          </div>
+        {/* Professional Meteor Shower */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              className="meteor-trail"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 8}s`,
+                animationDuration: `${4 + Math.random() * 3}s`,
+              }}
+            />
+          ))}
+        </div>
 
-          {/* Main Title with enhanced styling */}
-          <div className="space-y-8" style={{ animationDelay: '0.4s' }}>
-            <h1 className="font-display text-8xl md:text-[10rem] lg:text-[14rem] font-black tracking-tighter leading-none">
-              <span className="inline-block bg-gradient-to-r from-white via-primary via-accent to-destructive bg-clip-text text-transparent animate-scale-in drop-shadow-2xl">
-                VEYRA
-              </span>
-            </h1>
-            <div className="flex items-center justify-center gap-4">
-              <div className="h-1 w-24 bg-gradient-to-r from-transparent via-primary to-primary rounded-full" />
-              <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-              <div className="h-1 w-24 bg-gradient-to-r from-destructive to-transparent rounded-full" />
+        {/* Dynamic gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-destructive/10" />
+        
+        {/* Animated orbs */}
+        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[200px] animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-destructive/15 rounded-full blur-[180px] animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[150px] animate-float" style={{ animationDelay: '4s' }} />
+        
+        {/* Earth backdrop - larger and more prominent */}
+        <div className="absolute inset-0 flex items-center justify-end pr-0 pointer-events-none opacity-25">
+          <img 
+            src={earthFromISS} 
+            alt="Earth from ISS" 
+            className="w-[70%] h-[90%] object-cover object-left rounded-l-[4rem] animate-float shadow-2xl"
+            style={{ 
+              animationDuration: '8s',
+              maskImage: 'linear-gradient(to left, transparent, black 30%)',
+              WebkitMaskImage: 'linear-gradient(to left, transparent, black 30%)'
+            }}
+          />
+        </div>
+        
+        {/* Main Content Grid */}
+        <div className="relative z-20 max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center py-20">
+          {/* Left Column - Text Content */}
+          <div className="space-y-10 text-center lg:text-left">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-destructive/30 bg-black/50 backdrop-blur-xl shadow-lg hover:border-destructive/50 transition-all animate-scale-in">
+              <Sparkles className="w-5 h-5 text-destructive animate-pulse" />
+              <span className="text-sm font-bold tracking-widest text-destructive uppercase">NASA Space Apps 2025</span>
+            </div>
+
+            {/* Main Title */}
+            <div className="space-y-6 animate-fade-in">
+              <h1 className="font-display text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none">
+                <span className="inline-block bg-gradient-to-r from-white via-primary to-accent bg-clip-text text-transparent drop-shadow-2xl">
+                  VEYRA
+                </span>
+              </h1>
+              
+              <div className="space-y-2">
+                <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-extrabold text-white/90 leading-tight">
+                  Journey Beyond Earth
+                </h2>
+                <div className="flex items-center justify-center lg:justify-start gap-3">
+                  <div className="h-1 w-16 bg-gradient-to-r from-primary to-accent rounded-full" />
+                  <div className="h-2 w-2 rounded-full bg-destructive animate-pulse" />
+                  <div className="h-1 w-16 bg-gradient-to-r from-accent to-destructive rounded-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <p className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              Experience the International Space Station through immersive VR. From breathtaking Cupola views to realistic NBL training — discover how astronauts see and protect our planet.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <Link
+                to="/mission"
+                className="group relative px-10 py-5 rounded-2xl bg-gradient-to-r from-destructive to-red-600 font-display font-black text-xl text-white overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_60px_rgba(252,61,33,0.6)] shadow-[0_0_30px_rgba(252,61,33,0.4)]"
+              >
+                <span className="relative flex items-center justify-center gap-3">
+                  <Rocket className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />
+                  Launch Mission
+                </span>
+              </Link>
+              <Link
+                to="/cupola"
+                className="group relative px-10 py-5 rounded-2xl border-2 border-primary/50 bg-black/40 backdrop-blur-xl font-display font-black text-xl text-white hover:bg-primary/20 hover:border-primary hover:shadow-[0_0_40px_rgba(59,130,246,0.5)] transition-all hover:scale-105"
+              >
+                <span className="relative flex items-center justify-center gap-3">
+                  <Globe className="w-6 h-6 text-primary group-hover:rotate-12 transition-transform" />
+                  Enter Cupola
+                </span>
+              </Link>
             </div>
           </div>
 
-          {/* Subtitle with better hierarchy */}
-          <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight max-w-6xl mx-auto leading-tight" style={{ animationDelay: '0.6s' }}>
-            Journey Beyond Earth
-            <br />
-            <span className="bg-gradient-to-r from-primary via-cyan-400 to-accent bg-clip-text text-transparent">
-              Experience the ISS
-            </span>
-          </h2>
+          {/* Right Column - Orbital Visualization */}
+          <div className="hidden lg:flex items-center justify-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
+            <div className="relative w-[400px] h-[400px]">
+              {/* Central Core - ISS Representation */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary via-accent to-destructive flex items-center justify-center shadow-2xl animate-float backdrop-blur-xl border-2 border-white/20">
+                  <Rocket className="w-10 h-10 text-white animate-pulse" />
+                </div>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary via-accent to-destructive blur-xl opacity-50 animate-glow-pulse" />
+              </div>
 
-          {/* Description */}
-          <p className="text-xl md:text-3xl text-white/80 max-w-4xl mx-auto leading-relaxed font-light" style={{ animationDelay: '0.8s' }}>
-            Step into the International Space Station through immersive VR experiences.
-            From breathtaking Cupola views to weightless NBL training —
-            discover how astronauts see and help our planet.
-          </p>
+              {/* Orbital Ring */}
+              <div className="absolute inset-0 rounded-full border-2 border-primary/20 border-dashed animate-spin-slow" />
+              <div className="absolute inset-8 rounded-full border border-accent/10 border-dashed animate-spin-slow" style={{ animationDuration: '30s', animationDirection: 'reverse' }} />
 
-          {/* CTA Buttons with enhanced design */}
-          <div className="flex flex-col sm:flex-row gap-8 justify-center pt-12" style={{ animationDelay: '1s' }}>
-            <Link
-              to="/mission"
-              className="group relative px-14 py-6 rounded-2xl bg-gradient-to-r from-destructive via-red-600 to-destructive font-display font-black text-2xl text-white overflow-hidden transition-all hover:scale-110 hover:shadow-[0_0_80px_rgba(252,61,33,0.8)] shadow-[0_0_40px_rgba(252,61,33,0.5)]"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-destructive transition-transform group-hover:scale-110" />
-              <span className="relative flex items-center justify-center gap-4">
-                <Rocket className="w-7 h-7 group-hover:translate-y-[-4px] transition-transform" />
-                Launch Mission
-              </span>
-            </Link>
-            <Link
-              to="/cupola"
-              className="group relative px-14 py-6 rounded-2xl border-3 border-primary/60 bg-black/50 backdrop-blur-xl font-display font-black text-2xl text-white hover:bg-primary/20 hover:border-primary hover:shadow-[0_0_60px_rgba(59,130,246,0.6)] transition-all hover:scale-110 shadow-xl"
-            >
-              <span className="relative flex items-center justify-center gap-4">
-                <Globe className="w-7 h-7 text-primary group-hover:rotate-12 transition-transform" />
-                Enter Cupola
-              </span>
-            </Link>
-          </div>
+              {/* Orbiting Icons */}
+              {[
+                { icon: Globe, color: 'from-primary to-cyan-500', delay: '0s', size: 'w-16 h-16' },
+                { icon: Waves, color: 'from-accent to-purple-500', delay: '0.25s', size: 'w-14 h-14' },
+                { icon: Gamepad2, color: 'from-destructive to-orange-500', delay: '0.5s', size: 'w-16 h-16' },
+                { icon: Map, color: 'from-cyan-500 to-primary', delay: '0.75s', size: 'w-14 h-14' },
+                { icon: BookOpen, color: 'from-purple-500 to-accent', delay: '1s', size: 'w-12 h-12' },
+                { icon: Sparkles, color: 'from-primary to-accent', delay: '1.25s', size: 'w-12 h-12' },
+              ].map((item, index) => {
+                const Icon = item.icon;
+                const angle = (index * 60) * (Math.PI / 180);
+                const radius = 160;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                
+                return (
+                  <div
+                    key={index}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                    style={{
+                      animation: `orbit-${index} 20s linear infinite`,
+                      animationDelay: item.delay,
+                    }}
+                  >
+                    <div
+                      className={`${item.size} rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20 hover:scale-110 transition-transform`}
+                      style={{
+                        transform: `translate(${x}px, ${y}px)`,
+                      }}
+                    >
+                      <Icon className="w-8 h-8 text-white" />
+                    </div>
+                  </div>
+                );
+              })}
 
-          {/* Scroll Indicator */}
-          <div className="pt-24 animate-bounce">
-            <div className="w-7 h-12 border-3 border-white/40 rounded-full mx-auto relative hover:border-primary transition-colors">
-              <div className="w-2 h-4 bg-gradient-to-b from-white to-primary rounded-full absolute top-3 left-1/2 -translate-x-1/2 animate-pulse" />
+              {/* Glowing particles */}
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={`particle-${i}`}
+                  className="absolute w-1 h-1 bg-primary rounded-full animate-float"
+                  style={{
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 3}s`,
+                    animationDuration: `${2 + Math.random() * 2}s`,
+                    opacity: 0.6,
+                    boxShadow: '0 0 10px hsl(var(--primary))',
+                  }}
+                />
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Enhanced floating glow */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-20 pointer-events-none">
-          <div className="w-full h-full bg-gradient-to-t from-primary/40 via-accent/30 to-transparent blur-3xl" />
+        {/* Bottom glow */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[300px] opacity-30 pointer-events-none">
+          <div className="w-full h-full bg-gradient-to-t from-primary/30 via-accent/20 to-transparent blur-3xl" />
         </div>
       </section>
 
