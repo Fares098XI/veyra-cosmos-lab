@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -131,5 +132,104 @@ All colors MUST be HSL.
 
   .page-container {
     @apply relative z-10 min-h-screen px-4 py-8 md:px-8 lg:px-16;
+  }
+
+  .meteor-trail {
+    @apply absolute pointer-events-none;
+    width: 2px;
+    height: 200px;
+    background: linear-gradient(
+      180deg,
+      hsl(180 100% 80% / 1) 0%,
+      hsl(214 88% 65% / 0.9) 20%,
+      hsl(255 70% 65% / 0.6) 50%,
+      transparent 100%
+    );
+    box-shadow: 
+      0 0 20px 4px hsl(180 100% 70% / 0.8),
+      0 0 40px 8px hsl(214 88% 51% / 0.5),
+      0 0 60px 12px hsl(255 70% 65% / 0.3);
+    animation: meteor-fall-pro 5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    transform-origin: top center;
+  }
+
+  .meteor-trail::before {
+    content: '';
+    @apply absolute -top-1 left-1/2 -translate-x-1/2;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      hsl(180 100% 90% / 1),
+      hsl(214 88% 70% / 0.8),
+      transparent
+    );
+    box-shadow: 
+      0 0 20px 6px hsl(180 100% 70% / 1),
+      0 0 40px 12px hsl(214 88% 51% / 0.6),
+      0 0 60px 18px hsl(255 70% 65% / 0.4);
+  }
+
+  .meteor-trail::after {
+    content: '';
+    @apply absolute -top-2 left-1/2 -translate-x-1/2;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      hsl(180 100% 70% / 0.6),
+      hsl(214 88% 51% / 0.3),
+      transparent 70%
+    );
+    filter: blur(12px);
+  }
+
+  @keyframes meteor-fall-pro {
+    0% {
+      transform: translateY(-30vh) translateX(-15vw) rotate(-35deg) scale(0);
+      opacity: 0;
+    }
+    3% {
+      opacity: 1;
+      transform: translateY(-25vh) translateX(-12vw) rotate(-35deg) scale(1);
+    }
+    10% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(130vh) translateX(25vw) rotate(-35deg) scale(0.9);
+      opacity: 0;
+    }
+  }
+
+  /* Orbital animation keyframes */
+  @keyframes orbit-0 {
+    from { transform: rotate(0deg) translateX(160px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(160px) rotate(-360deg); }
+  }
+  @keyframes orbit-1 {
+    from { transform: rotate(60deg) translateX(160px) rotate(-60deg); }
+    to { transform: rotate(420deg) translateX(160px) rotate(-420deg); }
+  }
+  @keyframes orbit-2 {
+    from { transform: rotate(120deg) translateX(160px) rotate(-120deg); }
+    to { transform: rotate(480deg) translateX(160px) rotate(-480deg); }
+  }
+  @keyframes orbit-3 {
+    from { transform: rotate(180deg) translateX(160px) rotate(-180deg); }
+    to { transform: rotate(540deg) translateX(160px) rotate(-540deg); }
+  }
+  @keyframes orbit-4 {
+    from { transform: rotate(240deg) translateX(160px) rotate(-240deg); }
+    to { transform: rotate(600deg) translateX(160px) rotate(-600deg); }
+  }
+  @keyframes orbit-5 {
+    from { transform: rotate(300deg) translateX(160px) rotate(-300deg); }
+    to { transform: rotate(660deg) translateX(160px) rotate(-660deg); }
   }
 }
