@@ -47,26 +47,40 @@ All colors MUST be HSL.
   }
 
   .light {
-    /* Light mode color system */
-    --background: 0 0% 100%;
-    --foreground: 210 75% 8%;
-    --card: 0 0% 98%;
-    --card-foreground: 210 75% 8%;
+    /* Light mode color system - Space-inspired light theme */
+    --background: 210 40% 98%;
+    --foreground: 210 75% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 75% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 210 75% 8%;
-    --primary: 214 88% 31%;
+    --popover-foreground: 210 75% 12%;
+    --primary: 214 88% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 20% 90%;
-    --secondary-foreground: 210 75% 8%;
-    --muted: 210 20% 95%;
-    --muted-foreground: 210 20% 40%;
-    --accent: 255 70% 65%;
+    --secondary: 210 40% 92%;
+    --secondary-foreground: 210 75% 12%;
+    --muted: 210 30% 94%;
+    --muted-foreground: 210 30% 45%;
+    --accent: 255 70% 60%;
     --accent-foreground: 0 0% 100%;
     --destructive: 6 98% 56%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 20% 85%;
-    --input: 210 20% 90%;
-    --ring: 255 70% 65%;
+    --border: 210 30% 85%;
+    --input: 210 30% 90%;
+    --ring: 255 70% 60%;
+    --space-navy: 210 40% 98%;
+    --nasa-blue: 214 88% 45%;
+    --nasa-red: 6 98% 56%;
+    --nebula-violet: 255 70% 60%;
+    --cyan-glow: 180 100% 40%;
+    --gradient-space: linear-gradient(135deg, hsl(210 60% 95%), hsl(255 70% 95%));
+    --gradient-nebula: linear-gradient(135deg, hsl(255 70% 90%), hsl(280 70% 90%));
+    --gradient-nasa: linear-gradient(135deg, hsl(214 88% 85%), hsl(180 100% 85%));
+    --glow-cyan: 0 0 20px hsl(180 100% 40% / 0.2);
+    --glow-violet: 0 0 30px hsl(255 70% 60% / 0.3);
+    --glow-nasa: 0 0 25px hsl(214 88% 45% / 0.4);
+    --shadow-deep: 0 10px 40px hsl(210 30% 50% / 0.15);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glow: box-shadow 0.3s ease, transform 0.3s ease;
   }
 }
 
@@ -87,7 +101,7 @@ All colors MUST be HSL.
   }
 
   .light body {
-    background: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 20% 95%));
+    background: linear-gradient(180deg, hsl(210 50% 98%), hsl(210 60% 95%), hsl(255 60% 97%));
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -100,7 +114,12 @@ All colors MUST be HSL.
 @layer components {
   .glass-panel {
     @apply bg-card/40 backdrop-blur-xl border border-border/50 rounded-xl;
-    box-shadow: 0 8px 32px hsl(210 75% 5% / 0.5);
+    box-shadow: 0 8px 32px hsl(var(--background) / 0.3);
+  }
+  
+  .light .glass-panel {
+    @apply bg-card/60 backdrop-blur-xl border border-border/60;
+    box-shadow: 0 8px 32px hsl(210 30% 50% / 0.12);
   }
 
   .neon-glow {
@@ -207,29 +226,63 @@ All colors MUST be HSL.
     }
   }
 
-  /* Orbital animation keyframes */
+  /* Uniform Orbital Animations - Perfect Harmony */
   @keyframes orbit-0 {
-    from { transform: rotate(0deg) translateX(160px) rotate(0deg); }
-    to { transform: rotate(360deg) translateX(160px) rotate(-360deg); }
+    from { 
+      transform: rotate(0deg) translateX(170px) rotate(0deg);
+    }
+    to { 
+      transform: rotate(360deg) translateX(170px) rotate(-360deg);
+    }
   }
   @keyframes orbit-1 {
-    from { transform: rotate(60deg) translateX(160px) rotate(-60deg); }
-    to { transform: rotate(420deg) translateX(160px) rotate(-420deg); }
+    from { 
+      transform: rotate(60deg) translateX(170px) rotate(-60deg);
+    }
+    to { 
+      transform: rotate(420deg) translateX(170px) rotate(-420deg);
+    }
   }
   @keyframes orbit-2 {
-    from { transform: rotate(120deg) translateX(160px) rotate(-120deg); }
-    to { transform: rotate(480deg) translateX(160px) rotate(-480deg); }
+    from { 
+      transform: rotate(120deg) translateX(170px) rotate(-120deg);
+    }
+    to { 
+      transform: rotate(480deg) translateX(170px) rotate(-480deg);
+    }
   }
   @keyframes orbit-3 {
-    from { transform: rotate(180deg) translateX(160px) rotate(-180deg); }
-    to { transform: rotate(540deg) translateX(160px) rotate(-540deg); }
+    from { 
+      transform: rotate(180deg) translateX(170px) rotate(-180deg);
+    }
+    to { 
+      transform: rotate(540deg) translateX(170px) rotate(-540deg);
+    }
   }
   @keyframes orbit-4 {
-    from { transform: rotate(240deg) translateX(160px) rotate(-240deg); }
-    to { transform: rotate(600deg) translateX(160px) rotate(-600deg); }
+    from { 
+      transform: rotate(240deg) translateX(170px) rotate(-240deg);
+    }
+    to { 
+      transform: rotate(600deg) translateX(170px) rotate(-600deg);
+    }
   }
   @keyframes orbit-5 {
-    from { transform: rotate(300deg) translateX(160px) rotate(-300deg); }
-    to { transform: rotate(660deg) translateX(160px) rotate(-660deg); }
+    from { 
+      transform: rotate(300deg) translateX(170px) rotate(-300deg);
+    }
+    to { 
+      transform: rotate(660deg) translateX(170px) rotate(-660deg);
+    }
+  }
+  
+  /* Harmonious pulse glow animation */
+  @keyframes glow-pulse {
+    0%, 100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
 }
