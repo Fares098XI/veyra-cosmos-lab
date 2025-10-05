@@ -73,24 +73,12 @@ export default function Cupola() {
 
             <div className="flex items-center gap-2">
               <button
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition-colors"
-                onClick={() => {
-                  // existing Play behaviour left as a UI trigger
-                  // if you want it to do more, replace with actual logic
-                  window.alert("360° Tour starting (demo).");
-                }}
+                className="flex items-center gap-2 px-5 py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-white hover:scale-105 transition-all font-medium shadow-lg neon-glow"
+                onClick={() => (window.location.href = "/vr1")}
+                title="Launch Cupola VR Experience"
               >
                 <Play className="w-5 h-5" />
-                <span className="font-medium">Start 360° Tour</span>
-              </button>
-
-              {/* NEW: VR1 button - opens the static VR build (put your build in public/vrs/vr1) */}
-              <button
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm bg-card hover:bg-card/80 ml-2"
-                onClick={() => (window.location.href = "/vr1")}
-                title="Open Cupola VR"
-              >
-                <span className="font-medium">Enter VR</span>
+                <span className="font-medium">Launch Cupola Experience</span>
               </button>
             </div>
           </div>

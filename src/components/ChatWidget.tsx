@@ -11,7 +11,7 @@ export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [dismissed, setDismissed] = useState<boolean>(dismissedInitial);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: "Hi — ask me about Veyra, the map or a location." },
+    { role: "assistant", content: "Hi! Ask me about the ISS, Earth observations, or any location." },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -50,7 +50,6 @@ export default function ChatWidget() {
         body: JSON.stringify({ messages: nextMessages }),
       });
       const data = await res.json();
-      // try common response shapes, fall back to data.text or whole json snippet
       const assistantText =
         data?.message ??
         data?.text ??
@@ -59,13 +58,11 @@ export default function ChatWidget() {
         data?.choices?.[0]?.message?.content ??
         JSON.stringify(data).slice(0, 1000);
 
-      // normalize object -> string
       setMessages((m) => [...m, { role: "assistant", content: String(assistantText) }]);
-      // keep panel open when receiving reply
       setOpen(true);
     } catch (err) {
       console.error("ChatWidget: error", err);
-      setMessages((m) => [...m, { role: "assistant", content: "Sorry — failed to reach chat server." }]);
+      setMessages((m) => [...m, { role: "assistant", content: "Failed to reach chat server." }]);
     } finally {
       setLoading(false);
     }
@@ -99,7 +96,7 @@ export default function ChatWidget() {
           }}
           title="Re-enable chat widget"
         >
-          💬 Re-enable assistant
+          🌍 Re-enable guide
         </button>
       </div>
     );
@@ -129,8 +126,9 @@ export default function ChatWidget() {
           justifyContent: "center",
           fontSize: 20,
         }}
+        title="Space Guide"
       >
-        💬
+        🌍
       </button>
 
       {/* Chat panel */}
@@ -144,7 +142,7 @@ export default function ChatWidget() {
           display: open ? "block" : "none",
         }}
         role="dialog"
-        aria-label="Veyra assistant"
+        aria-label="Space Guide"
       >
         <div
           style={{
@@ -172,12 +170,12 @@ export default function ChatWidget() {
             }}
           >
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: "#063f51", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>
-                VA
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: "#063f51", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 18 }}>
+                🌍
               </div>
               <div>
-                <div style={{ fontWeight: 700 }}>Veyra Assistant</div>
-                <div style={{ fontSize: 12, color: "#9fb3c8" }}>Ask about Veyra, the map or any location</div>
+                <div style={{ fontWeight: 700 }}>Space Guide</div>
+                <div style={{ fontSize: 12, color: "#9fb3c8" }}>Ask about the ISS, map, or any location</div>
               </div>
             </div>
 
@@ -240,7 +238,7 @@ export default function ChatWidget() {
 
             {loading && (
               <div style={{ marginTop: 4, color: "#9fb3c8", fontSize: 13 }}>
-                Assistant is typing...
+                Thinking...
               </div>
             )}
           </div>

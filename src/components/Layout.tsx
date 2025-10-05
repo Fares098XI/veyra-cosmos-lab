@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Rocket } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import ChatbaseBot from "./ChatbaseBot";
+import ChatWidget from "./ChatWidget";
 
 const navigation = [
   { name: "Home", path: "/" },
@@ -49,19 +49,33 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         
         {/* Meteors/Shooting stars */}
         <div className="absolute inset-0">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={`meteor-${i}`}
-              className="absolute w-[2px] h-[80px] bg-gradient-to-b from-white via-primary/80 to-transparent animate-meteor"
-              style={{
+          {[...Array(12)].map((_, i) => {
+            const colors = [
+              { core: 'rgba(255,255,255,0.95)', trail: 'rgba(255,255,255,0)', glow: 'rgba(255,255,255,0.9)' },
+              { core: 'rgba(100,200,255,0.95)', trail: 'rgba(100,200,255,0)', glow: 'rgba(100,200,255,0.8)' },
+              { core: 'rgba(255,80,120,0.95)', trail: 'rgba(255,80,120,0)', glow: 'rgba(255,80,120,0.7)' },
+            ];
+            const color = colors[i % 3];
+            return (
+              <div key={`meteor-${i}`} className="absolute animate-meteor" style={{
                 top: `${Math.random() * -20}%`,
                 left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${Math.random() * 2 + 2}s`,
-                boxShadow: '0 0 10px rgba(255,255,255,0.8)',
-              }}
-            />
-          ))}
+                animationDelay: `${Math.random() * 8}s`,
+                animationDuration: `${Math.random() * 2.5 + 1.5}s`,
+              }}>
+                <div className="relative w-[3px] h-[100px]" style={{
+                  background: `linear-gradient(to bottom, ${color.core}, ${color.trail})`,
+                  boxShadow: `0 0 12px ${color.glow}, 0 0 24px ${color.glow}`,
+                  borderRadius: '50% 50% 0 0',
+                }}>
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[5px] h-[5px] rounded-full" style={{
+                    background: color.core,
+                    boxShadow: `0 0 8px ${color.glow}`,
+                  }}/>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Subtle NASA red accent glow */}
@@ -75,7 +89,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center neon-glow">
-              <Rocket className="w-6 h-6 text-white" />
+              <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                <path d="M12 4v16M4 12h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <circle cx="12" cy="8" r="1.5" fill="currentColor"/>
+                <circle cx="16" cy="12" r="1.5" fill="currentColor"/>
+                <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+                <circle cx="8" cy="12" r="1.5" fill="currentColor"/>
+                <path d="M15 9l3-3M9 15l-3 3M15 15l3 3M9 9L6 6" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.6"/>
+              </svg>
             </div>
             <div>
               <div className="font-display text-xl font-bold gradient-text">Veyra</div>
@@ -145,6 +167,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Main content */}
       <main className="relative z-10">{children}</main>
 
+      <ChatWidget />
+
       {/* Footer */}
       <footer className="relative z-10 mt-20 border-t border-border/30 py-8">
         <div className="container mx-auto px-4 text-center">
@@ -169,8 +193,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </footer>
-
-      <ChatbaseBot />
     </div>
   );
 }
