@@ -31,11 +31,11 @@ export default function VR2() {
         </div>
 
         <h1 className="font-display text-4xl md:text-6xl font-bold mb-3">
-          Cupola VR — <span className="gradient-text">VR 2</span>
+          NBL VR — <span className="gradient-text">VR 2</span>
         </h1>
 
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-6">
-          Secondary Cupola scene — controls below to open in fullscreen or a new tab.
+          NBL scene — controls below to open in fullscreen or a new tab.
         </p>
 
         <div className="flex items-center justify-center gap-3 mb-6">
@@ -89,3 +89,4 @@ export default function VR2() {
     </div>
   );
 }
+
