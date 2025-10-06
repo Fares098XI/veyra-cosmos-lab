@@ -1,65 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>A‑Frame 360 PNG Viewer</title>
-  <!-- A-Frame CDN -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <!-- Optional: cursor / raycaster for gaze interaction on mobile/VR -->
-  <style>
-    body { margin: 0; font-family: system-ui, Arial; }
-    #ui { position: absolute; left: 12px; top: 12px; z-index: 2; background: rgba(0,0,0,0.4); color: #fff; padding: 8px 10px; border-radius: 8px; }
-    #ui a { color: #9cf; }
-  </style>
-</head>
-<body>
-  <div id="ui">
-    <strong>A-Frame 360 PNG Viewer</strong>
-    <div style="font-size:12px; margin-top:6px">Replace <code>assets/360.png</code> with your PNG file.</div>
-  </div>
+  <head>
+    <meta charset="UTF-8">
+    <title>A-Frame 360 PNG Scene</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
 
-  <!-- Scene -->
-  <a-scene background="color: #000" renderer="antialias: true">
+      <!-- Assets: 360 image -->
+      <a-assets>
+        <img id="skyTexture" src="360.png" crossorigin="anonymous">
+      </a-assets>
 
-    <!-- Assets: put your 360 PNG in the same folder and name it assets/360.png, or change the path below -->
-    <a-assets>
-      <img id="pano" src="assets/360.png" crossorigin="anonymous" />
-    </a-assets>
+      <!-- Sky using the 360 image -->
+      <a-sky src="#skyTexture" rotation="0 -90 0"></a-sky>
 
-    <!-- Sky uses the PNG as an equirectangular texture -->
-    <a-sky id="sky" src="#pano" rotation="0 -90 0"></a-sky>
+      <!-- Camera -->
+      <a-entity camera look-controls position="0 1.6 0"></a-entity>
 
-    <!-- Camera with controls -->
-    <a-entity id="cameraRig">
-      <a-entity id="camera" camera look-controls wasd-controls position="0 1.6 0">
-        <!-- Cursor for desktop/VR interaction -->
-        <a-entity cursor="fuse: false; rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
-      </a-entity>
-    </a-entity>
-
-    <!-- Example: simple hotspot that looks at camera when hovered -->
-    <a-entity id="hotspot" geometry="primitive: ring; radiusInner: 0.12; radiusOuter: 0.18" position="0 1.6 -3" material="shader: flat; color: #FFCC00" class="clickable" event-set__enter="scale: 1.6 1.6 1" event-set__leave="scale: 1 1 1">
-      <a-animation attribute="scale" begin="mouseenter" dur="200" to="1.6 1.6 1"></a-animation>
-      <a-animation attribute="scale" begin="mouseleave" dur="200" to="1 1 1"></a-animation>
-    </a-entity>
-
-    <!-- A ground plane just for reference if you want to add objects in front of the user -->
-    <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" visible="false"></a-plane>
-
-    <!-- Optional: simple instructions that disappear when user looks around -->
-    <a-entity id="label" position="0 1.2 -1.8" text="value: Click and drag / move device to look around; Press 'R' to recenter; ; align: center; width: 1.8; color: #fff"></a-entity>
-
-    <!-- Recenter helper: press 'R' to recenter camera orientation -->
-    <script>
-      document.addEventListener('keydown', (e) => {
-        if (e.key.toLowerCase() === 'r') {
-          const camera = document.querySelector('#camera');
-          if (camera) camera.setAttribute('rotation', '0 0 0');
-        }
-      });
-    </script>
-
-  </a-scene>
-</body>
+    </a-scene>
+  </body>
 </html>
